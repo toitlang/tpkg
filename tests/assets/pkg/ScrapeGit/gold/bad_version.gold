@@ -1,0 +1,3 @@
+pkg describe https://github.com/toitware/toit-morse bad-version
+Exit Code: 1
+Error: Invalid version: 'bad-version'

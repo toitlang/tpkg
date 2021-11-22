@@ -1,0 +1,11 @@
+prefixes:
+  native1: native1
+  native2: native2
+
+packages:
+  native1:
+    url: '<[*TEST_GIT_DIR_ESCAPE*]>/native_git'
+    version: 1.5.8
+  native2:
+    url: '<[*TEST_GIT_DIR_ESCAPE*]>/native_git'
+    version: 2.3.5

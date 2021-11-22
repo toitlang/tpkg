@@ -1,0 +1,22 @@
+// Add registry so we can find packages.
+===================
+pkg registry add --local test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+// Prefix must be used with package name.
+===================
+pkg install --name=foo
+Exit Code: 1
+Error: Name flag can only be used with a package argument
+===================
+// Path must be used with path.
+===================
+pkg install --local
+Exit Code: 1
+Error: Local flag requires path argument
+===================
+// Prefix must be valid.
+===================
+pkg install --name invalid prefix pkg2
+Exit Code: 1
+Error: Invalid name: 'invalid prefix'

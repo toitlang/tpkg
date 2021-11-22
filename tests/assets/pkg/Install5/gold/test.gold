@@ -1,0 +1,76 @@
+pkg registry add --local test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+pkg registry add --local test-reg2 <TEST>/registry_ambiguous
+Exit Code: 0
+===================
+// Ambiguous pkg1
+===================
+pkg install pkg1
+Exit Code: 1
+Error: More than one matching package 'pkg1' found
+===================
+// Disambiguate by giving full URL.
+===================
+pkg install <GIT_URL>/git_pkgs/pkg1
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg1@1.0.0' installed with name 'pkg1'
+===================
+// Ambiguous pkg2
+===================
+pkg search --verbose pkg2
+Exit Code: 0
+pkg2:
+  description: Ambiguous to pkg2. Prefixes URL.
+  url: example.com/<GIT_URL>/git_pkgs/pkg2
+  version: 1.0.0
+  hash: 3141592653
+  
+pkg2:
+  description: git-package 2
+  url: <GIT_URL>/git_pkgs/pkg2
+  version: 2.4.2
+  Dependencies:
+    <GIT_URL>/git_pkgs/pkg3 - ^3.0.0
+===================
+// Disambiguate by giving full URL even though that's the suffix of the longer one.
+===================
+pkg install <GIT_URL>/git_pkgs/pkg2
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg2@2.4.2' installed with name 'pkg2'
+===================
+// Ambiguous 'ambiguous'
+===================
+pkg search --verbose ambiguous
+Exit Code: 0
+pkg2:
+  description: Ambiguous to pkg2. Prefixes URL.
+  url: example.com/<GIT_URL>/git_pkgs/pkg2
+  version: 1.0.0
+  hash: 3141592653
+  
+ambiguous:
+  description: first of two packages that have long name that is equal
+  url: <GIT_URL>/a/b/c/d/ambiguous
+  version: 3.1.2
+  hash: 12345678
+  
+ambiguous:
+  description: second of two packages that have long name that is equal
+  url: <GIT_URL>/a2/b/c/d/ambiguous
+  version: 3.1.2
+  hash: 11223344
+  
+===================
+// Need to add more segments to disambiguate.
+===================
+pkg install b/c/d/ambiguous
+Exit Code: 1
+Error: More than one matching package 'b/c/d/ambiguous' found
+===================
+// Will still yield an error (because we don't have the package),
+// but it's a different one
+===================
+pkg install a/b/c/d/ambiguous
+Exit Code: 1
+Error: Error while cloning '<GIT_URL>/a/b/c/d/ambiguous' with tag 'v3.1.2': repository not found

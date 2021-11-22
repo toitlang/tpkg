@@ -1,0 +1,94 @@
+// Execution should fail, as the package is not installed yet
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 1
+::exec:: main.toit:3:8: error: Package for prefix 'foo' not found
+::exec:: import foo
+::exec::        ^~
+::exec:: main.toit:4:8: error: Package for prefix 'bar' not found
+::exec:: import bar
+::exec::        ^~
+::exec:: main.toit:7:7: error: Unresolved identifier: 'say_hello'
+::exec::   foo.say_hello
+::exec::       ^~
+::exec:: main.toit:8:7: error: Unresolved identifier: 'say_hello'
+::exec::   bar.say_hello
+::exec::       ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main.toit:3:8 error: Package for prefix 'foo' not found
+::analyze:: <TEST>/main.toit:4:8 error: Package for prefix 'bar' not found
+::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main.toit:8:7 error: Unresolved identifier: 'say_hello'
+::analyze:: 
+===================
+// Install packages from the registry
+===================
+pkg registry add --local test-reg registry
+Exit Code: 0
+===================
+pkg install foo
+Exit Code: 0
+Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
+===================
+pkg install bar
+Exit Code: 0
+Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'bar'
+===================
+// Execution should succeed now
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: hello from foo 1.2.3
+::exec:: hello from bar 2.0.1
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+// Execution should fail, as the prefixes are not yet known
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 1
+::exec:: main2.toit:3:8: error: Package for prefix 'pre1' not found
+::exec:: import pre1.foo
+::exec::        ^~
+::exec:: main2.toit:4:8: error: Package for prefix 'pre2' not found
+::exec:: import pre2.bar
+::exec::        ^~
+::exec:: main2.toit:7:7: error: Unresolved identifier: 'say_hello'
+::exec::   foo.say_hello
+::exec::       ^~
+::exec:: main2.toit:8:7: error: Unresolved identifier: 'say_hello'
+::exec::   bar.say_hello
+::exec::       ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main2.toit:3:8 error: Package for prefix 'pre1' not found
+::analyze:: <TEST>/main2.toit:4:8 error: Package for prefix 'pre2' not found
+::analyze:: <TEST>/main2.toit:7:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main2.toit:8:7 error: Unresolved identifier: 'say_hello'
+::analyze:: 
+===================
+pkg install --name=pre1 foo
+Exit Code: 0
+Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'pre1'
+===================
+pkg install --name=pre2 bar
+Exit Code: 0
+Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'pre2'
+===================
+// Execution should succeed now
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 0
+::exec:: hello from foo 1.2.3
+::exec:: hello from bar 2.0.1
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 0
+::analyze:: 

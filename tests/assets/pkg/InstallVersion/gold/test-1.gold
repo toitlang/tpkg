@@ -1,0 +1,21 @@
+pkg install many@1
+Exit Code: 0
+Info: Package '<GIT_URL>/pkgs_many_versions/many@1.1.0' installed with name 'many'
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  many: many
+packages:
+  many:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: 1.1.0
+
+===================
+pkg packagefile
+Exit Code: 0
+dependencies:
+  many:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^1.1.0
+

@@ -1,0 +1,6 @@
+prefixes:
+  pkg3: pkg3
+packages:
+  pkg3:
+    url: "<[*TEST_GIT_DIR_ESCAPE*]>/git_pkgs/pkg3"
+    version: 3.1.2

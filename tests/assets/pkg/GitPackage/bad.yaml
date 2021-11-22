@@ -1,0 +1,4 @@
+name: foo
+# Bad because the version doesn't exist.
+version: 9.9.9
+url: <[*TEST_GIT_DIR*]>/foo_git

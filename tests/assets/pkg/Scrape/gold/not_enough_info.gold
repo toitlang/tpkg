@@ -1,0 +1,11 @@
+pkg describe pkg_dirs/not_enough_info
+Exit Code: 1
+Error: Missing name
+Error: Missing description
+===================
+pkg describe --verbose pkg_dirs/not_enough_info
+Exit Code: 1
+Info: Not using README for name, as it has no title
+Info: Not using README for description, as it doesn't have introducing paragraph
+Error: Missing name
+Error: Missing description

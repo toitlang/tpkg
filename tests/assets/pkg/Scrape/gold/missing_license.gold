@@ -1,0 +1,20 @@
+pkg describe pkg_dirs/missing_license
+Exit Code: 0
+Warning: Missing license
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  hash: <Not scraped for local paths>
+  
+===================
+pkg describe --verbose pkg_dirs/missing_license
+Exit Code: 0
+Info: No 'LICENSE' file found
+Warning: Missing license
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  hash: <Not scraped for local paths>
+  

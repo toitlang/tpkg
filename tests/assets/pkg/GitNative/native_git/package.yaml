@@ -1,0 +1,3 @@
+name: native_git
+description: A local package that has been created with a native git tool.
+license: BSD

@@ -1,0 +1,42 @@
+pkg describe local_path
+Exit Code: 0
+Warning: Dependency to local path: 'some/path'
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  Dependencies:
+    <local path> - 
+===================
+pkg describe --verbose local_path
+Exit Code: 0
+Warning: Dependency to local path: 'some/path'
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  Dependencies:
+    <local path> - 
+===================
+pkg describe --allow-local-deps local_path
+Exit Code: 0
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  Dependencies:
+    <local path> - 
+===================
+pkg describe --disallow-local-deps local_path
+Exit Code: 1
+Error: Dependency to local path: 'some/path'
+===================
+pkg describe --allow-local-deps --disallow-local-deps local_path
+Exit Code: 1
+Error: --allow-local-deps and --disallow-local-deps are exclusive

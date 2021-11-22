@@ -1,0 +1,6 @@
+name: foo
+description: Description of foo. foo-desc.
+version: 1.2.3
+url: <[*TEST_GIT_DIR*]>/foo_git
+environment:
+  sdk: ^1.1.30

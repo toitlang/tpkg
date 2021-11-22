@@ -1,0 +1,9 @@
+pkg describe https://github.com/toitware/test-pkg.git/foo 1.0.0
+Exit Code: 0
+foo:
+  description: nested package foo
+  url: github.com/toitware/test-pkg.git/foo
+  version: 1.0.0
+  license: MIT
+  hash: f8a0f656505eabd4b5d968186a0ddf49d704edd0
+  

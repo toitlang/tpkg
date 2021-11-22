@@ -1,0 +1,11 @@
+pkg install
+Exit Code: 0
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: foo-1.0.0 old alt
+::exec:: foo-1.5.0
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 

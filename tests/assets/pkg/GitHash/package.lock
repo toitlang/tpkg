@@ -1,0 +1,12 @@
+prefixes:
+  foo: foo
+  foo2: foo2
+packages:
+  foo:
+    url: github.com/toitware/test-pkg.git/foo
+    version: 1.0.0  # Actual tag has different hash.
+    hash: dc701befd4debbf7793d9f0dfe41a8b9e82d3b88
+  foo2:
+    url: github.com/toitware/test-pkg.git/foo
+    version: 1.5.0  # Tag doesn't exist
+    hash: 619f9aca8a4a82e7bc37ab9060ca6b342f13bf6b

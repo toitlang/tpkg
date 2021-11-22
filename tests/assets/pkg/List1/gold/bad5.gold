@@ -1,0 +1,4 @@
+pkg list bad_registry5
+Exit Code: 0
+bad_registry5:
+  missing_hash - 1.0.4

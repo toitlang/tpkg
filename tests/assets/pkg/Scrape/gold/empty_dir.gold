@@ -1,0 +1,7 @@
+pkg describe pkg_dirs/empty_dir
+Exit Code: 1
+Error: Missing 'package.yaml' file in 'pkg_dirs/empty_dir'
+===================
+pkg describe --verbose pkg_dirs/empty_dir
+Exit Code: 1
+Error: Missing 'package.yaml' file in 'pkg_dirs/empty_dir'

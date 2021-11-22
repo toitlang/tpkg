@@ -1,0 +1,8 @@
+pkg registry add --local test-reg <TEST>/reg_with_hidden
+Exit Code: 0
+===================
+// Should be empty and ignore the yaml file in the hidden folder
+===================
+pkg registry list
+Exit Code: 0
+test-reg: <TEST>/reg_with_hidden (local)

@@ -1,0 +1,57 @@
+// In a fresh configuration we don't expect to see any registry.
+===================
+pkg registry list
+Exit Code: 0
+===================
+pkg registry add --local test-reg <TEST>/registry
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0
+test-reg: <TEST>/registry (local)
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry:
+  bar - 2.0.1
+  foo - 1.1.0
+  foo - 1.2.3
+  sub - 2.0.0
+  sub - 3.1.4
+===================
+// Note that the second registry is added with a relative path
+// But that the list below shows it with an absolute path
+===================
+pkg registry add --local test-reg2 registry2
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0
+test-reg: <TEST>/registry (local)
+test-reg2: <TEST>/registry2 (local)
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry:
+  bar - 2.0.1
+  foo - 1.1.0
+  foo - 1.2.3
+  sub - 2.0.0
+  sub - 3.1.4
+test-reg2: <TEST>/registry2:
+  reg - 0.0.1
+===================
+pkg registry add --local bad-reg bad_registry
+Exit Code: 1
+Error: Specification 'missing_a_way_to_downlad' has an empty URL
+===================
+// It's OK to add the same registry with the same name again
+===================
+pkg registry add --local test-reg <TEST>/registry
+Exit Code: 0
+===================
+// It's an error to add a registry with an existing name but a different path
+===================
+pkg registry add --local test-reg registry2
+Exit Code: 1
+Error: Registry 'test-reg' already exists

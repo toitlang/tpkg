@@ -1,0 +1,19 @@
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: all ok
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+pkg install --local pkg
+Exit Code: 0
+Info: Package 'pkg' installed with name 'pkg'
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 0
+::exec:: local package
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 0
+::analyze:: 

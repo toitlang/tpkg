@@ -1,0 +1,68 @@
+// No package installed yet.
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 1
+::exec:: main.toit:3:8: error: Package for prefix 'pkg4_pre' not found
+::exec:: import pkg4_pre.pkg4
+::exec::        ^~
+::exec:: main.toit:6:14: error: Unresolved identifier: 'identify'
+::exec::   print pkg4.identify
+::exec::              ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main.toit:3:8 error: Package for prefix 'pkg4_pre' not found
+::analyze:: <TEST>/main.toit:6:14 error: Unresolved identifier: 'identify'
+::analyze:: 
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 1
+::exec:: main2.toit:3:8: error: Package for prefix 'pkg1' not found
+::exec:: import pkg1
+::exec::        ^~
+::exec:: main2.toit:6:14: error: Unresolved identifier: 'identify'
+::exec::   print pkg1.identify
+::exec::              ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main2.toit:3:8 error: Package for prefix 'pkg1' not found
+::analyze:: <TEST>/main2.toit:6:14 error: Unresolved identifier: 'identify'
+::analyze:: 
+===================
+// Add registry so we can find packages.
+===================
+pkg registry add --local test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+// Install pkg4 for 'main.toit', creating/updating a lock file.
+===================
+pkg install pkg4 --name=pkg4_pre
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg4@4.9.9' installed with name 'pkg4_pre'
+===================
+// main.toit should work now.
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: pkg4-4.9.9
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+pkg install pkg1
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg1@1.0.0' installed with name 'pkg1'
+===================
+// main2.toit should also work now.
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 0
+::exec:: pkg1-1.0.0pkg2-2.4.2pkg3-3.1.2
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 0
+::analyze:: 

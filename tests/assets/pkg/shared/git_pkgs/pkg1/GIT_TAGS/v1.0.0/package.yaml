@@ -1,0 +1,6 @@
+name: pkg1
+description: git-package 1
+dependencies:
+  pkg2:
+    url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg2
+    version: ^2.1.3

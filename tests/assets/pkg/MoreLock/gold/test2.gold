@@ -1,0 +1,5 @@
+// Should error, as the lock file has more entries.
+===================
+pkg install pkg3
+Exit Code: 1
+Error: Lock file has prefixes that aren't in package.yaml: pkg1, pkg2

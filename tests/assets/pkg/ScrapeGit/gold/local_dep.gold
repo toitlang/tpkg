@@ -1,0 +1,14 @@
+pkg describe https://github.com/toitware/test-pkg.git/local_dep 1.0.0
+Exit Code: 1
+Error: Dependency to local path: 'some/path'
+===================
+pkg describe --allow-local-deps https://github.com/toitware/test-pkg.git/local_dep 1.0.0
+Exit Code: 0
+local_dep:
+  description: nested package local_dep with local dependency
+  url: github.com/toitware/test-pkg.git/local_dep
+  version: 1.0.0
+  license: MIT
+  hash: 2e9f72fcce27ee5f2701d3c0548bd91154e38bfe
+  Dependencies:
+    <local path> - 

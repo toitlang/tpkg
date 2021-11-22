@@ -1,0 +1,56 @@
+// No package installed yet.
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 1
+::exec:: <TEST>/package.lock:6:10: error: Package '<GIT_URL>/git_pkgs/pkg1-1.0.0' not found
+::exec::     url: '<GIT_URL>/git_pkgs/pkg1'
+::exec::          ^~
+::exec:: main.toit:3:8: error: Package 'pkg1' for prefix 'pkg1' not found
+::exec:: import pkg1
+::exec::        ^~
+::exec:: main.toit:6:14: error: Unresolved identifier: 'identify'
+::exec::   print pkg1.identify
+::exec::              ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main.toit:3:8 error: Package 'pkg1' for prefix 'pkg1' not found
+::analyze:: <TEST>/main.toit:6:14 error: Unresolved identifier: 'identify'
+::analyze:: <TEST>/package.lock:6:10 error: Package '<GIT_URL>/git_pkgs/pkg1-1.0.0' not found
+::analyze:: 
+===================
+// Add registry so we can find packages.
+===================
+pkg registry add --local test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+// Just 'install' doesn't add the missing dependencies.
+===================
+pkg install
+Exit Code: 0
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  pkg1: pkg1
+packages:
+  pkg1:
+    url: <GIT_URL>/git_pkgs/pkg1
+    version: 1.0.0
+
+===================
+// With '--recompute' we get the missing dependencies.
+===================
+pkg install --recompute
+Exit Code: 0
+===================
+// Should work now.
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: pkg1-1.0.0pkg2-2.4.2pkg3-3.1.2
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 

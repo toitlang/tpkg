@@ -1,0 +1,5 @@
+name: pkg2
+description: Ambiguous to pkg2. Prefixes URL.
+url: example.com/<[*TEST_GIT_DIR*]>/git_pkgs/pkg2
+version: 1.0.0
+hash: 3141592653

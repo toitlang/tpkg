@@ -1,0 +1,7 @@
+pkg list list_registry
+Exit Code: 0
+list_registry:
+  bar - 0.0.1
+  foo - 1.0.3
+  gee - 1.0.3
+  sub - 10.0.3

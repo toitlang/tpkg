@@ -1,0 +1,22 @@
+pkg describe pkg_dirs/mit
+Exit Code: 0
+inferred_name:
+  description: Inferred description from README.
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  
+===================
+pkg describe --verbose pkg_dirs/mit
+Exit Code: 0
+Info: Using name from README.md: 'inferred_name'
+Info: Using description from README.md: 'Inferred description from README.'
+Info: Using license 'MIT' from 'LICENSE' file
+inferred_name:
+  description: Inferred description from README.
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  

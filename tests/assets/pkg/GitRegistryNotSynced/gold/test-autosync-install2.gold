@@ -1,0 +1,3 @@
+pkg install pkg1
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg1@1.0.0' installed with name 'pkg1'

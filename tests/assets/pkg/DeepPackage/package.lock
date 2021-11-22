@@ -1,0 +1,15 @@
+prefixes:
+  foo1: foo1
+  foo2: foo2
+  gee: gee
+
+packages:
+  foo1:
+    url: "github.com/toitware/test-pkg.git/foo"
+    version: 1.0.0
+  foo2:
+    url: "github.com/toitware/test-pkg.git/foo"
+    version: 2.3.0
+  gee:
+    url: "github.com/toitware/test-pkg.git/bar/gee"
+    version: 1.0.1
