@@ -1,0 +1,11 @@
+pkg registry add test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry_git_pkgs:
+  pkg1 - 1.0.0
+  pkg2 - 1.0.0
+  pkg2 - 2.4.2
+  pkg3 - 3.1.2
+  pkg4 - 4.9.9

@@ -1,0 +1,2 @@
+pkg init --project-root=<TEST>/other
+Exit Code: 0

@@ -1,0 +1,9 @@
+pkg describe pkg_dirs/missing_name
+Exit Code: 1
+Error: Missing name
+===================
+pkg describe --verbose pkg_dirs/missing_name
+Exit Code: 1
+Info: Not using README for name, as it has no title
+Info: Using description from README.md: 'Has description but no name.'
+Error: Missing name

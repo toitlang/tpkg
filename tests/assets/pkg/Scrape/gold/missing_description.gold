@@ -1,0 +1,9 @@
+pkg describe pkg_dirs/missing_description
+Exit Code: 1
+Error: Missing description
+===================
+pkg describe --verbose pkg_dirs/missing_description
+Exit Code: 1
+Info: Using name from README.md: 'title_used_as_name'
+Info: Not using README for description, as it doesn't have introducing paragraph
+Error: Missing description

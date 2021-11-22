@@ -1,0 +1,5 @@
+pkg uninstall pkg1
+Exit Code: 0
+===================
+pkg clean
+Exit Code: 0

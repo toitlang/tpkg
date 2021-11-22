@@ -1,0 +1,84 @@
+pkg registry add test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry_git_pkgs:
+  pkg1 - 1.0.0
+  pkg2 - 1.0.0
+  pkg2 - 2.4.2
+  pkg3 - 3.1.2
+  pkg4 - 4.9.9
+===================
+pkg install pkg1
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg1@1.0.0' installed with name 'pkg1'
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  pkg1: pkg1
+packages:
+  pkg1:
+    url: <GIT_URL>/git_pkgs/pkg1
+    version: 1.0.0
+    prefixes:
+      pkg2: pkg2
+  pkg2:
+    url: <GIT_URL>/git_pkgs/pkg2
+    version: 2.4.2
+    prefixes:
+      pre: pkg3
+  pkg3:
+    url: <GIT_URL>/git_pkgs/pkg3
+    version: 3.1.2
+
+===================
+pkg registry add test-reg3 <TEST>/registry_git_pkgs_newer_versions
+Exit Code: 0
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry_git_pkgs:
+  pkg1 - 1.0.0
+  pkg2 - 1.0.0
+  pkg2 - 2.4.2
+  pkg3 - 3.1.2
+  pkg4 - 4.9.9
+test-reg3: <TEST>/registry_git_pkgs_newer_versions:
+  pkg2 - 2.4.3
+  pkg3 - 3.1.3
+===================
+pkg registry add --local test-reg2 <TEST>/registry
+Exit Code: 0
+===================
+pkg install foo
+Exit Code: 0
+Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
+===================
+// Installing foo did not change the versions of the existing packages
+===================
+pkg lockfile
+Exit Code: 0
+sdk: ^1.1.30
+prefixes:
+  foo: foo_git
+  pkg1: pkg1
+packages:
+  foo_git:
+    url: <GIT_URL>/foo_git
+    version: 1.2.3
+  pkg1:
+    url: <GIT_URL>/git_pkgs/pkg1
+    version: 1.0.0
+    prefixes:
+      pkg2: pkg2
+  pkg2:
+    url: <GIT_URL>/git_pkgs/pkg2
+    version: 2.4.2
+    prefixes:
+      pre: pkg3
+  pkg3:
+    url: <GIT_URL>/git_pkgs/pkg3
+    version: 3.1.2
+

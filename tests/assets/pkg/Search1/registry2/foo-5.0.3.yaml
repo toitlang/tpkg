@@ -1,0 +1,5 @@
+name: foo
+version: 5.0.3
+license: MIT
+url: <[*TEST_GIT_DIR*]>/foo_git
+hash: 22222222222

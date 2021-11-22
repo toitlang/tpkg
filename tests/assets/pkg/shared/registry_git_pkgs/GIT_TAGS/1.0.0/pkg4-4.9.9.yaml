@@ -1,0 +1,4 @@
+name: pkg4
+description: git-package 4
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg4
+version: 4.9.9 

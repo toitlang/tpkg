@@ -1,0 +1,3 @@
+pkg install --local main.toit
+Exit Code: 1
+Error: Target 'main.toit' is not a directory

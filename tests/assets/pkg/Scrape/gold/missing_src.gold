@@ -1,0 +1,7 @@
+pkg describe pkg_dirs/missing_src
+Exit Code: 1
+Error: Missing 'src' directory in 'pkg_dirs/missing_src'
+===================
+pkg describe --verbose pkg_dirs/missing_src
+Exit Code: 1
+Error: Missing 'src' directory in 'pkg_dirs/missing_src'

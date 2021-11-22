@@ -1,0 +1,25 @@
+pkg install pkg1
+Exit Code: 0
+Info: Package '<GIT_URL>/git_pkgs/pkg1@1.0.0' installed with name 'pkg1'
+===================
+// Now we have the newer versions
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  pkg1: pkg1
+packages:
+  pkg1:
+    url: <GIT_URL>/git_pkgs/pkg1
+    version: 1.0.0
+    prefixes:
+      pkg2: pkg2
+  pkg2:
+    url: <GIT_URL>/git_pkgs/pkg2
+    version: 2.4.3
+    prefixes:
+      pre: pkg3
+  pkg3:
+    url: <GIT_URL>/git_pkgs/pkg3
+    version: 3.1.3
+

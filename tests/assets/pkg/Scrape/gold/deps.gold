@@ -1,0 +1,23 @@
+pkg describe pkg_dirs/deps
+Exit Code: 0
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  Dependencies:
+    github.com/toitware/toit-morse - 1.0.2
+    github.com/toitware/toit-morse-tutorial - 1.0.0
+===================
+pkg describe --verbose pkg_dirs/deps
+Exit Code: 0
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  Dependencies:
+    github.com/toitware/toit-morse - 1.0.2
+    github.com/toitware/toit-morse-tutorial - 1.0.0

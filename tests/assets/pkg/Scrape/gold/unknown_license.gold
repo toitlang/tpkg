@@ -1,0 +1,21 @@
+pkg describe pkg_dirs/unknown_license
+Exit Code: 0
+Warning: Unknown SDIX license-ID: 'unknown-license'
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: unknown-license
+  hash: <Not scraped for local paths>
+  
+===================
+pkg describe --verbose pkg_dirs/unknown_license
+Exit Code: 0
+Warning: Unknown SDIX license-ID: 'unknown-license'
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: unknown-license
+  hash: <Not scraped for local paths>
+  

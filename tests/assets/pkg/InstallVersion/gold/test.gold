@@ -1,0 +1,95 @@
+pkg registry add test-reg <TEST>/registry_many_versions
+Exit Code: 0
+===================
+pkg list
+Exit Code: 0
+test-reg: <TEST>/registry_many_versions:
+  many - 1.0.0
+  many - 1.0.1
+  many - 1.1.0
+  many - 2.0.0
+  many - 2.3.5
+  many - 2.3.8
+  many - 3.0.2
+===================
+pkg install many
+Exit Code: 0
+Info: Package '<GIT_URL>/pkgs_many_versions/many@3.0.2' installed with name 'many'
+===================
+pkg install many@99
+Exit Code: 1
+Error: No package 'many' with version 99 found
+===================
+pkg install many@1
+Exit Code: 1
+Error: Project has already a package with name 'many'
+===================
+pkg install --name=foo many@1.0
+Exit Code: 0
+Info: Package '<GIT_URL>/pkgs_many_versions/many@1.0.1' installed with name 'foo'
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  foo: many-1.0.1
+  many: many-3.0.2
+packages:
+  many-1.0.1:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: 1.0.1
+  many-3.0.2:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: 3.0.2
+
+===================
+pkg packagefile
+Exit Code: 0
+dependencies:
+  foo:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^1.0.1
+  many:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^3.0.2
+
+===================
+pkg install --name=gee many@1
+Exit Code: 0
+Info: Package '<GIT_URL>/pkgs_many_versions/many@1.1.0' installed with name 'gee'
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  foo: many-1.1.0
+  gee: many-1.1.0
+  many: many-3.0.2
+packages:
+  many-1.1.0:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: 1.1.0
+  many-3.0.2:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: 3.0.2
+
+===================
+pkg packagefile
+Exit Code: 0
+dependencies:
+  foo:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^1.0.1
+  gee:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^1.1.0
+  many:
+    url: <GIT_URL>/pkgs_many_versions/many
+    version: ^3.0.2
+
+===================
+pkg install --name=bad1 many@
+Exit Code: 1
+Error: Missing version after '@' in 'many@'
+===================
+pkg install --name=bad2 many@not_a-version
+Exit Code: 1
+Error: Invalid version: 'not_a-version'

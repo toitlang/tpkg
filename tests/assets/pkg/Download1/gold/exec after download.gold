@@ -1,0 +1,9 @@
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: hello from foo 1.2.3
+::exec:: hello from bar 2.0.1
+::exec:: hello from target
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 

@@ -1,0 +1,11 @@
+pkg install
+Exit Code: 0
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: native_git 1.5.8
+::exec:: native_git 2.3.5
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 

@@ -1,0 +1,116 @@
+// Since there is no registry, we shouldn't find any package.
+===================
+pkg search foo
+Exit Code: 0
+===================
+pkg registry add --local test-reg <TEST>/registry
+Exit Code: 0
+===================
+// Search should find packages now.
+===================
+pkg search foo
+Exit Code: 0
+foo - 1.2.3
+===================
+pkg search --verbose foo
+Exit Code: 0
+foo:
+  description: Description of foo. foo-desc.
+  url: <GIT_URL>/foo_git
+  version: 1.2.3
+  environment:
+    sdk: ^1.1.30
+  
+===================
+pkg search Foo-Desc
+Exit Code: 0
+foo - 1.2.3
+===================
+pkg search bar
+Exit Code: 0
+bar - 2.0.1
+===================
+pkg search sub
+Exit Code: 0
+sub - 3.1.4
+===================
+// The gee package doesn't exist in this registry.
+===================
+pkg search gee
+Exit Code: 0
+===================
+// Search also finds things in descriptions.
+===================
+pkg search foo-desc
+Exit Code: 0
+foo - 1.2.3
+===================
+pkg search bar-desc
+Exit Code: 0
+bar - 2.0.1
+===================
+pkg search bAr-dEsc
+Exit Code: 0
+bar - 2.0.1
+===================
+pkg search desc
+Exit Code: 0
+bar - 2.0.1
+foo - 1.2.3
+sub - 3.1.4
+===================
+// Search also finds things in the URL.
+===================
+pkg search foo_git
+Exit Code: 0
+foo - 1.2.3
+===================
+pkg search bar_git
+Exit Code: 0
+bar - 2.0.1
+===================
+pkg registry add --local test-reg2 <TEST>/registry2
+Exit Code: 0
+===================
+// The new foo package has a higher version and shadows the other one.
+===================
+pkg search foo
+Exit Code: 0
+foo - 5.0.3
+===================
+// The gee package is now visible too.
+===================
+pkg search gee
+Exit Code: 0
+gee - 1.1.1
+===================
+// Works with bad case and subset
+===================
+pkg search Ee
+Exit Code: 0
+gee - 1.1.1
+===================
+// Install doesn't work with subsets
+===================
+pkg install Ee
+Exit Code: 1
+Error: Package 'Ee' not found
+===================
+// The bar and sub package didn't change
+===================
+pkg search bar
+Exit Code: 0
+bar - 2.0.1
+===================
+pkg search sub
+Exit Code: 0
+sub - 3.1.4
+===================
+// Find all packages:
+===================
+pkg search 
+Exit Code: 0
+gee - 1.1.1
+bar - 2.0.1
+foo - 5.0.3
+sub - 3.1.4

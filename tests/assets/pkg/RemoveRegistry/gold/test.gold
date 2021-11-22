@@ -1,0 +1,37 @@
+pkg registry list
+Exit Code: 0
+toit: github.com/toitware/registry (git)
+===================
+pkg registry remove toit
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0
+===================
+pkg registry add test-reg1 <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+pkg registry add --local test-reg2 <TEST>/registry
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0
+test-reg1: <TEST>/registry_git_pkgs (git)
+test-reg2: <TEST>/registry (local)
+===================
+pkg registry remove non-existant
+Exit Code: 1
+Error: Registry 'non-existant' does not exist
+===================
+pkg registry remove test-reg1
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0
+test-reg2: <TEST>/registry (local)
+===================
+pkg registry remove test-reg2
+Exit Code: 0
+===================
+pkg registry list
+Exit Code: 0

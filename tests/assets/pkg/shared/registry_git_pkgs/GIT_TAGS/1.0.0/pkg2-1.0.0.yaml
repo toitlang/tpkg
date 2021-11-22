@@ -1,0 +1,4 @@
+name: pkg2
+description: git-package 2
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg2
+version: 1.0.0

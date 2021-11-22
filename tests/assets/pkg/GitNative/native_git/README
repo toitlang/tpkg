@@ -1,0 +1,16 @@
+This directory is a git-directory.
+
+It contains two versions of a package: v1.5.8 and v2.3.5 (checked out as
+main).
+
+Since we can't store git repositories inside other git repositories,
+we have stored the `.git` directory in a zip file. The test framework
+automatically extracts zip files.
+
+When manipulating the test, it's thus generally necessary to unzip the
+archive first, before changing the files.
+
+Note that there is a second `.git_windows.zip` which is used on Windows. The
+content of these git repositories is the same (although built separately on
+respective platforms). This is to avoid any problems with windows/posix
+conventions inside the git data structures themselves.

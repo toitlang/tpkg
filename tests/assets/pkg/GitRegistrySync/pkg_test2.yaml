@@ -1,0 +1,4 @@
+name: pkg_test2
+description: git-package test 2
+url: <[*TEST_GIT_DIR*]>/pkg_test_git2
+version: 4.9.9

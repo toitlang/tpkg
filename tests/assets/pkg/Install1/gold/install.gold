@@ -1,0 +1,47 @@
+::exec:: exec main.toit
+::exec:: Exit Code: 1
+::exec:: main.toit:3:8: error: Package for prefix 'pkg' not found
+::exec:: import pkg
+::exec::        ^~
+::exec:: main.toit:6:7: error: Unresolved identifier: 'say_hello'
+::exec::   pkg.say_hello
+::exec::       ^~
+::exec:: Compilation failed.
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 1
+::analyze:: <TEST>/main.toit:3:8 error: Package for prefix 'pkg' not found
+::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say_hello'
+::analyze:: 
+===================
+pkg install --local pkg
+Exit Code: 0
+Info: Package 'pkg' installed with name 'pkg'
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: hello from pkg
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+// Install with a prefix.
+===================
+pkg install --local --name=prepkg pkg2
+Exit Code: 0
+Info: Package 'pkg2' installed with name 'prepkg'
+===================
+::exec:: exec main2.toit
+::exec:: Exit Code: 0
+::exec:: hello from pkg2
+::exec:: 
+::analyze:: analyze main2.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+// Installing again yields an error.
+===================
+pkg install --local pkg
+Exit Code: 1
+Error: Project has already a package with name 'pkg'

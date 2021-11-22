@@ -1,0 +1,2 @@
+pkg registry remove test-reg
+Exit Code: 0

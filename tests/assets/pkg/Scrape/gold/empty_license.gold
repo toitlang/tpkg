@@ -1,0 +1,19 @@
+pkg describe pkg_dirs/empty_license
+Exit Code: 0
+Warning: Unknown license in 'LICENSE' file
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  hash: <Not scraped for local paths>
+  
+===================
+pkg describe --verbose pkg_dirs/empty_license
+Exit Code: 0
+Warning: Unknown license in 'LICENSE' file
+name_from_spec:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  hash: <Not scraped for local paths>
+  

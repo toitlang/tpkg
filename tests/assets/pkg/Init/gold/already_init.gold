@@ -1,0 +1,6 @@
+pkg init
+Exit Code: 0
+===================
+pkg init
+Exit Code: 0
+Info: Directory '<TEST>' already initialized

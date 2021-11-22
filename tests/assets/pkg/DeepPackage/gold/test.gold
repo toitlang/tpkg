@@ -1,0 +1,34 @@
+pkg registry add --local deep <TEST>/nested_registry
+Exit Code: 0
+===================
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo 1.0.0
+Exit Code: 0
+Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/foo/1.0.0/desc.yaml'
+===================
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo 2.3.0
+Exit Code: 0
+Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/foo/2.3.0/desc.yaml'
+===================
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/bar/gee 1.0.1
+Exit Code: 0
+Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/bar/gee/1.0.1/desc.yaml'
+===================
+pkg list
+Exit Code: 0
+deep: <TEST>/nested_registry:
+  gee - 1.0.1
+  foo - 1.0.0
+  foo - 2.3.0
+===================
+pkg install
+Exit Code: 0
+===================
+::exec:: exec test.toit
+::exec:: Exit Code: 0
+::exec:: foo-1.0.0
+::exec:: foo-2.3.0
+::exec:: gee-1.0.1
+::exec:: 
+::analyze:: analyze test.toit
+::analyze:: Exit Code: 0
+::analyze:: 

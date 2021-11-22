@@ -1,0 +1,7 @@
+::exec:: exec hello.toit
+::exec:: Exit Code: 0
+::exec:: Hello World
+::exec:: 
+::analyze:: analyze hello.toit
+::analyze:: Exit Code: 0
+::analyze:: 
