@@ -85,7 +85,7 @@ const toitcEnv string = "TOITC_PATH"
 const toitlspEnv string = "TOITLSP_PATH"
 
 // The environment variable that gives the tpkg executable. This is a required variable.
-const tpkgEnv string = "TPKG_PATH"
+const toitpkgEnv string = "TOITPKG_PATH"
 
 // The testing framework updates all gold tests when this environment variable is set.
 const updateGoldEnv string = "UPDATE_PKG_GOLD"
@@ -127,7 +127,7 @@ type PkgTest struct {
 	overwriteRunDir    string
 	t                  *tedi.T
 	ctx                context.Context
-	tpkg               *toitCmd
+	toitpkg            *toitCmd
 	toitAnalyze        *toitCmd
 	toitExec           *toitCmd
 	goldRepls          map[string]string
@@ -349,12 +349,12 @@ func fixtureCreatePkgTest(ctx context.Context, t *tedi.T, dir TestDirectory) Pkg
 	absPkgDir := filepath.Join(string(dir), pkgDir)
 	absRegistryCacheDir := filepath.Join(absCacheDir, registryCacheDir)
 
-	tpkg, _ := os.LookupEnv(tpkgEnv)
+	tpkg, _ := os.LookupEnv(toitpkgEnv)
 	toitvm, _ := os.LookupEnv(toitvmEnv)
 	toitc, _ := os.LookupEnv(toitcEnv)
 	toitlsp, _ := os.LookupEnv(toitlspEnv)
 	if tpkg == "" {
-		log.Fatalf("Missing 'tpkg' path in '%s' environment variable", tpkgEnv)
+		log.Fatalf("Missing 'tpkg' path in '%s' environment variable", toitpkgEnv)
 	}
 	if (toitc == "" && toitlsp != "") || (toitc != "" && toitlsp == "") {
 		log.Fatalf("Toitlsp (%s) and toitc (%s) need to given as pairs", toitlspEnv, toitcEnv)
@@ -396,7 +396,7 @@ func fixtureCreatePkgTest(ctx context.Context, t *tedi.T, dir TestDirectory) Pkg
 		dir: string(dir),
 		t:   t,
 		ctx: ctx,
-		tpkg: &toitCmd{
+		toitpkg: &toitCmd{
 			path: tpkg,
 		},
 		toitAnalyze: toitAnalyze,
@@ -433,7 +433,7 @@ func (pt PkgTest) runToit(args ...string) (string, error) {
 		if pt.useDefaultRegistry {
 			runFlags = runFlags[:len(runFlags)-1]
 		}
-		cmd, err = pt.tpkg.RunInDir(pt.ctx, dir, append(runFlags, args...)...)
+		cmd, err = pt.toitpkg.RunInDir(pt.ctx, dir, append(runFlags, args...)...)
 	}
 	env := cmd.Env
 	for k, v := range pt.env {
@@ -1050,7 +1050,7 @@ func test_toitPkg(t *tedi.T) {
 
 		deleteRegCache(t, pt, regPath)
 
-		pt.tpkg.args = append([]string{"--no-autosync"}, pt.tpkg.args...)
+		pt.toitpkg.args = append([]string{"--no-autosync"}, pt.toitpkg.args...)
 
 		pt.GoldToit("test-no-autosync", [][]string{
 			{"// Without sync there shouldn't be any packages"},
@@ -1079,7 +1079,7 @@ func test_toitPkg(t *tedi.T) {
 				// No autosync for the second pass.
 				suffix = "-no-autosync"
 				yamlFile = "pkg_test2.yaml"
-				pt.tpkg.args = append([]string{"--no-autosync"}, pt.tpkg.args...)
+				pt.toitpkg.args = append([]string{"--no-autosync"}, pt.toitpkg.args...)
 			}
 
 			pt.GoldToit("test-1"+suffix, [][]string{
