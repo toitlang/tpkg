@@ -2,7 +2,7 @@ BUILD_DIR := build
 
 GO_PACKAGE := github.com/toitlang/tpkg
 
-all: tpkg
+all: toitpkg
 .PHONY: all
 
 $(BUILD_DIR):
@@ -21,15 +21,15 @@ else
 $(eval GO_BUILD_FLAGS=$(GO_BUILD_FLAGS) CGO_ENABLED=1 GODEBUG=netdns=go)
 endif
 
-$(BUILD_DIR)/tpkg: $(GO_SOURCES)
-	$(GO_BUILD_FLAGS) go build -ldflags "$(GO_LINK_FLAGS)" -tags 'netgo osusergo' -o $(BUILD_DIR)/tpkg ./cmd/tpkg
+$(BUILD_DIR)/toitpkg: $(GO_SOURCES)
+	$(GO_BUILD_FLAGS) go build -ldflags "$(GO_LINK_FLAGS)" -tags 'netgo osusergo' -o $(BUILD_DIR)/toitpkg ./cmd/toitpkg
 
-.PHONY: tpkg
-tpkg: $(BUILD_DIR)/tpkg
+.PHONY: toitpkg
+toitpkg: $(BUILD_DIR)/toitpkg
 
 TEST_FLAGS ?=
 .PHONY: test
-test: tpkg $(GO_MOCKS)
+test: toitpkg $(GO_MOCKS)
 	tedi test -v -cover $(TEST_FLAGS) $(foreach dir,$(filter-out third_party/, $(sort $(dir $(wildcard */)))),./$(dir)...)
 
 .PHONY: clean
