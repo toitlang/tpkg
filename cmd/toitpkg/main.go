@@ -51,7 +51,7 @@ var (
 	noAutosync          bool
 
 	rootCmd = &cobra.Command{
-		Use:              "tpkg",
+		Use:              "toitpkg",
 		Short:            "Run pkg commands",
 		TraverseChildren: true,
 	}
