@@ -505,7 +505,7 @@ func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 			}
 			withFlag := strings.Join(quoted, " ")
 			h.ui.ReportError(`Command must be executed in project root.
-  Run 'pkg init --app' first to create a new application here, or
+  Run 'pkg init' first to create a new application here, or
   Run with '--project-root': ` + withFlag)
 			return newExitError(1)
 		}
