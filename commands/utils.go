@@ -16,6 +16,10 @@
 package commands
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/spf13/cobra"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -35,4 +39,29 @@ func ErrorMessage(err error) string {
 
 func IsAlreadyExistsError(err error) bool {
 	return status.Code(err) == codes.AlreadyExists
+}
+
+type WithExitCode interface {
+	ExitCode() int
+}
+
+type WithSilent interface {
+	Silent() bool
+}
+
+func DefaultRunWrapper(f CobraErrorCommand) CobraCommand {
+	return func(cmd *cobra.Command, args []string) {
+		err := f(cmd, args)
+		if err != nil {
+			_, ok := err.(WithSilent)
+			if !ok {
+				fmt.Fprintf(os.Stderr, "Unhandled error: %v\n", err)
+			}
+			e, ok := err.(WithExitCode)
+			if ok {
+				os.Exit(e.ExitCode())
+			}
+			os.Exit(1)
+		}
+	}
 }
