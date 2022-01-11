@@ -1521,9 +1521,9 @@ func test_toitPkg(t *tedi.T) {
 			{"exec", "main.toit"},
 			{"pkg", "uninstall", "foo"},
 		})
-		pt.sdkVersion = "1.1.10"
+		pt.sdkVersion = "0.1.10"
 		pt.GoldToit("test4", [][]string{
-			{"// sdkVersion = 1.1.10"},
+			{"// sdkVersion = 0.1.10"},
 			{"pkg", "install", "foo"},
 		})
 		pt.sdkVersion = ""

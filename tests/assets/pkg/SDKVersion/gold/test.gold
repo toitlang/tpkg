@@ -9,7 +9,7 @@ test-reg: <TEST>/registry:
     url: <GIT_URL>/bar_git
     version: 2.0.1
     environment:
-      sdk: ^1.1.20
+      sdk: ^0.1.20
     license: MIT
     Dependencies:
       <GIT_URL>/foo_git - 1.2.3
@@ -19,14 +19,14 @@ test-reg: <TEST>/registry:
     url: <GIT_URL>/foo_git
     version: 1.1.0
     environment:
-      sdk: ^1.1.0
+      sdk: ^0.1.0
     
   foo:
     description: Description of foo. foo-desc.
     url: <GIT_URL>/foo_git
     version: 1.2.3
     environment:
-      sdk: ^1.1.30
+      sdk: ^0.1.30
     
   sub:
     description: Description of sub. sub-desc
