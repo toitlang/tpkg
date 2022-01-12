@@ -1,0 +1,6 @@
+// sdkVersion = 0.0.0
+===================
+pkg install foo
+Exit Code: 1
+Warning: No version of '<GIT_URL>/foo_git' exists for SDK version '0.0.0'
+Error: Couldn't find a valid solution for the package constraints

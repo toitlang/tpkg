@@ -22,6 +22,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/toitlang/tpkg/commands"
@@ -31,14 +32,6 @@ import (
 )
 
 var (
-	// Used for flag.
-	cfgFile             string
-	cacheDir            string
-	noDefaultRegistry   bool
-	shouldPrintTracking bool
-	sdkVersion          string
-	noAutosync          bool
-
 	rootCmd = &cobra.Command{
 		Use:              "toitpkg",
 		Short:            "Run pkg commands",
@@ -46,25 +39,20 @@ var (
 	}
 )
 
-func main() {
-	// We use the configurations in the viperConf below.
-	// If we didn't want to use the globals we could also switch to
-	// a PreRun function.
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file")
-	rootCmd.Flags().MarkHidden("config")
-	rootCmd.PersistentFlags().StringVar(&cacheDir, "cache", "", "cache dir")
-	rootCmd.Flags().MarkHidden("cache")
-	rootCmd.PersistentFlags().BoolVar(&noDefaultRegistry, "no-default-registry", false, "Don't use default registry if none exists")
-	rootCmd.Flags().MarkHidden("no-default-registry")
-	rootCmd.PersistentFlags().BoolVar(&noAutosync, "no-autosync", false, "Don't automatically sync")
-	rootCmd.Flags().MarkHidden("no-autosync")
-	rootCmd.PersistentFlags().BoolVar(&shouldPrintTracking, "track", false, "Print tracking information")
-	rootCmd.Flags().MarkHidden("track")
+func getTrimmedEnv(key string) string {
+	return strings.TrimSpace(os.Getenv(key))
+}
 
-	rootCmd.PersistentFlags().StringVar(&sdkVersion, "sdk-version", "", "The SDK version")
+func main() {
+	cfgFile := getTrimmedEnv("TOIT_CONFIG_FILE")
+	cacheDir := getTrimmedEnv("TOIT_CACHE_DIR")
+	noDefaultRegistry := getTrimmedEnv("TOIT_NO_DEFAULT_REGISTRY")
+	shouldPrintTracking := getTrimmedEnv("TOIT_SHOULD_PRINT_TRACKING")
+	sdkVersion := getTrimmedEnv("TOIT_SDK_VERSION")
+	noAutosync := getTrimmedEnv("TOIT_NO_AUTO_SYNC")
 
 	track := func(ctx context.Context, te *tracking.Event) error {
-		if shouldPrintTracking {
+		if shouldPrintTracking != "" {
 			tmpl := template.Must(template.New("tracking").Parse(`Name: {{.Name}}
 {{if .Properties }}Properties:{{ range $field, $value := .Properties }}
   {{$field}}: {{$value}}{{end}}{{end}}
@@ -78,7 +66,7 @@ func main() {
 		return nil
 	}
 
-	configStore := store.NewViper(cacheDir, sdkVersion, noAutosync, noDefaultRegistry)
+	configStore := store.NewViper(cacheDir, sdkVersion, noAutosync != "", noDefaultRegistry != "")
 	cobra.OnInitialize(func() {
 		if cfgFile == "" {
 			cfgFile, _ = config.UserConfigFile()

@@ -1,5 +1,5 @@
 pkg install github.com/toitware/toit-morse
 Exit Code: 1
 Error: Command must be executed in project root.
-  Run pkg init --app first to create a new application here, or
-  Run with --project-root: <tpkg> --cache <TEST>/CACHE --config <TEST>/config.yaml --no-default-registry pkg install github.com/toitware/toit-morse --project-root=<TEST>
+  Run pkg init first to create a new application here, or
+  Run with --project-root: <tpkg> pkg install github.com/toitware/toit-morse --project-root=<TEST>
