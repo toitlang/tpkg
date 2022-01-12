@@ -8,12 +8,33 @@ jobs:
     strategy:
       # The matrix will run all possible combinations in parallel.
       matrix:
-        container: [ ubuntu-latest, macos-latest ]
+        container: [ ubuntu-latest, macos-latest, windows-latest ]
 
     runs-on: ${{ matrix.container }}
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set up constants
+        id: constants
+        run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            echo ::set-output name=toit_archive::toit-linux.tar.gz
+            echo '::set-output name=toitvm::${{ github.workspace }}/toit/bin/toit.run'
+            echo '::set-output name=toitpkg::${{ github.workspace }}/build/toitpkg'
+          elif [ "$RUNNER_OS" == "macOS" ]; then
+            echo ::set-output name=toit_archive::toit-macos.tar.gz
+            echo '::set-output name=toitvm::${{ github.workspace }}/toit/bin/toit.run'
+            echo '::set-output name=toitpkg::${{ github.workspace }}/build/toitpkg'
+          elif [ "$RUNNER_OS" == "Windows" ]; then
+            echo ::set-output name=toit_archive::toit-windows.tar.gz
+            echo '::set-output name=toitvm::${{ github.workspace }}\toit\bin\toit.run.exe'
+            echo '::set-output name=toitpkg::${{ github.workspace }}\build\toitpkg.exe'
+          else
+            echo "UNSUPPORTED RUNNER: $RUNNER_OS"
+            exit 1
+          fi
+        shell: bash
 
       # Use Go 1.17
       - name: Switch to Go 1.17
@@ -24,24 +45,14 @@ jobs:
         shell: bash
         run: |
           make go_dependencies
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Toit dependencies
         id: toit
         shell: bash
         run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            curl -O -L https://github.com/toitlang/toit/releases/download/v0.14.0/toit-linux.tar.gz
-            tar x -f toit-linux.tar.gz
-            echo "::set-output name=toitvm::$PWD/toit/bin/toit.run"
-          elif [ "$RUNNER_OS" == "macOS" ]; then
-            curl -O -L https://github.com/toitlang/toit/releases/download/v0.14.0/toit-macos.tar.gz
-            tar x -f toit-macos.tar.gz
-            echo "::set-output name=toitvm::$PWD/toit/bin/toit.run"
-          else
-            echo "UNSUPPORTED RUNNER: $RUNNER_OS"
-            exit 1
-          fi
+          curl -O -L https://github.com/toitlang/toit/releases/download/v0.14.0/${{ steps.constants.outputs.toit_archive }}
+          tar x -f ${{ steps.constants.outputs.toit_archive }}
 
       - name: Build
         run: |
@@ -50,7 +61,7 @@ jobs:
       # Test.
       - name: test
         env:
-          TOITPKG_PATH: ${{ github.workspace }}/build/toitpkg
-          TOITVM_PATH: ${{ steps.toit.outputs.toitvm }}
+          TOITPKG_PATH: ${{ steps.constants.outputs.toitpkg }}
+          TOITVM_PATH: ${{ steps.constants.outputs.toitvm }}
         run: |
           make test
