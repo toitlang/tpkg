@@ -60,7 +60,7 @@ Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
 ===================
 pkg lockfile
 Exit Code: 0
-sdk: ^1.1.30
+sdk: ^0.1.30
 prefixes:
   foo: foo_git
   pkg1: pkg1

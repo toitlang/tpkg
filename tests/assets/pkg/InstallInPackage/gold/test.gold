@@ -14,7 +14,7 @@ Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'bar'
 ===================
 pkg lockfile
 Exit Code: 0
-sdk: ^1.1.30
+sdk: ^0.1.30
 prefixes:
   bar: bar_git
   foo: foo_git
