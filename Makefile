@@ -13,7 +13,7 @@ endif
 
 .PHONY: go_dependencies
 go_dependencies:
-	go get -u github.com/jstroem/tedi/cmd/tedi
+	go install github.com/jstroem/tedi/cmd/tedi
 
 GO_BUILD_FLAGS ?=
 ifeq ("$(GO_BUILD_FLAGS)", "")
