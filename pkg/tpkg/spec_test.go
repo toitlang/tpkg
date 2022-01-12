@@ -128,7 +128,7 @@ dependencies:
 			dep = spec.Deps["good_path_override"]
 			assert.Equal(t, "github.com/foo/bar", dep.URL)
 			assert.Equal(t, "^2.0.0", dep.Version)
-			assert.Equal(t, "../foobar", dep.Path.FilePath())
+			assert.Equal(t, filepath.FromSlash("../foobar"), dep.Path.FilePath())
 		})
 
 		t.Run("version no url", func(t *testing.T) {
