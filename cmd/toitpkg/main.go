@@ -39,20 +39,17 @@ var (
 	}
 )
 
-func main() {
-	cfgFile, _ := os.LookupEnv("TOIT_CONFIG_FILE")
-	cacheDir, _ := os.LookupEnv("TOIT_CACHE_DIR")
-	noDefaultRegistry, _ := os.LookupEnv("TOIT_NO_DEFAULT_REGISTRY")
-	shouldPrintTracking, _ := os.LookupEnv("TOIT_SHOULD_PRINT_TRACKING")
-	sdkVersion, _ := os.LookupEnv("TOIT_SDK_VERSION")
-	noAutosync, _ := os.LookupEnv("TOIT_NO_AUTO_SYNC")
+func getTrimmedEnv(key string) string {
+	return strings.TrimSpace(os.Getenv(key))
+}
 
-	cfgFile = strings.Trim(cfgFile, " ")
-	cacheDir = strings.Trim(cacheDir, " ")
-	noDefaultRegistry = strings.Trim(noDefaultRegistry, " ")
-	shouldPrintTracking = strings.Trim(shouldPrintTracking, " ")
-	sdkVersion = strings.Trim(sdkVersion, " ")
-	noAutosync = strings.Trim(noAutosync, " ")
+func main() {
+	cfgFile := getTrimmedEnv("TOIT_CONFIG_FILE")
+	cacheDir := getTrimmedEnv("TOIT_CACHE_DIR")
+	noDefaultRegistry := getTrimmedEnv("TOIT_NO_DEFAULT_REGISTRY")
+	shouldPrintTracking := getTrimmedEnv("TOIT_SHOULD_PRINT_TRACKING")
+	sdkVersion := getTrimmedEnv("TOIT_SDK_VERSION")
+	noAutosync := getTrimmedEnv("TOIT_NO_AUTO_SYNC")
 
 	track := func(ctx context.Context, te *tracking.Event) error {
 		if shouldPrintTracking != "" {
