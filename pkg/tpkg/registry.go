@@ -343,7 +343,7 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			url := gr.url
 
 			var err error
-			for _, branch := range []string{"master", "main", "trunk"} {
+			for _, branch := range []string{"main", "master", "trunk"} {
 				_, err = git.Clone(ctx, p, git.CloneOptions{
 					URL:          url,
 					SingleBranch: true,
