@@ -21,7 +21,9 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/alexflint/go-filemutex"
 	"github.com/gobwas/glob"
 	"github.com/toitlang/tpkg/pkg/git"
 )
@@ -337,9 +339,54 @@ func (gr *gitRegistry) Describe() string {
 
 func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) error {
 	if sync {
+		p := gr.path
+		if gr.path == "" {
+			p = cache.PreferredRegistryPath(gr.url)
+		}
+
+		// Make sure only one pkg-manager is loading the registry at the same time.
+		// Use a lock file in the directory above the registry's checkout path.
+		// This way we don't interfere with cloning/pulling, but still have relatively
+		// good granularity, allowing to sync multiple registries at the same time.
+		lockP := filepath.Join(filepath.Dir(p), ".tpgk_sync.lock")
+		err := os.MkdirAll(filepath.Dir(lockP), 0755)
+		if err != nil {
+			return err
+		}
+		m, err := filemutex.New(lockP)
+		if err != nil {
+			println("Error is here")
+			return err
+		}
+
+		unlocked := make(chan struct{})
+		ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		defer cancel()
+
+		// The following has a race condition:
+		// We could get the lock, then enter the `default` select, but before
+		// closing the channel, the ctx is done and the second select becomes
+		// non-deterministic.
+		// In that case we don't even unlock anymore.
+		// It's a bad case, but better than not giving any error-message.
+		go func() {
+			m.Lock()
+			select {
+			case <-ctx.Done():
+				m.Unlock()
+			default:
+				close(unlocked)
+			}
+		}()
+		select {
+		case <-unlocked:
+			defer m.Unlock()
+		case <-ctx.Done():
+			return fmt.Errorf("unable to acquire sync lock %s", lockP)
+		}
+
 		if gr.path == "" {
 
-			p := cache.PreferredRegistryPath(gr.url)
 			url := gr.url
 
 			var err error
@@ -363,11 +410,10 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			}
 			gr.pathRegistry.path = p
 		} else {
-			err := git.Pull(gr.path, git.PullOptions{})
+			err := git.Pull(p, git.PullOptions{})
 			if err != nil {
 				return err
 			}
-
 		}
 	}
 	if gr.path == "" {
