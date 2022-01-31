@@ -343,6 +343,10 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			url := gr.url
 
 			var err error
+			// The go-git library doesn't support cloning repositories that use 'main' as
+			// default branch: https://github.com/go-git/go-git/issues/363
+			// We therefore try different ones.
+			// It's advantageous to try the correct one first.
 			for _, branch := range []string{"main", "master", "trunk"} {
 				_, err = git.Clone(ctx, p, git.CloneOptions{
 					URL:          url,
