@@ -355,7 +355,6 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 		}
 		m, err := filemutex.New(lockP)
 		if err != nil {
-			println("Error is here")
 			return err
 		}
 
@@ -408,7 +407,7 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			if err != nil {
 				return err
 			}
-			gr.pathRegistry.path = p
+			gr.path = p
 		} else {
 			err := git.Pull(p, git.PullOptions{})
 			if err != nil {
