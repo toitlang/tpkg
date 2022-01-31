@@ -348,14 +348,19 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			// We therefore try different ones.
 			// It's advantageous to try the correct one first.
 			for _, branch := range []string{"main", "master", "trunk"} {
-				_, err = git.Clone(ctx, p, git.CloneOptions{
+				_, branchErr := git.Clone(ctx, p, git.CloneOptions{
 					URL:          url,
 					SingleBranch: true,
 					Branch:       branch,
 				})
-				if err == nil {
+				if branchErr == nil {
+					err = nil
 					break
 				}
+				if err == nil || !strings.Contains(branchErr.Error(), "couldn't find remote ref") {
+					err = branchErr
+				}
+
 			}
 			if err != nil {
 				return err
