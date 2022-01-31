@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/alessio/shellescape v1.4.1
+	github.com/alexflint/go-filemutex v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/gobwas/glob v0.2.3
