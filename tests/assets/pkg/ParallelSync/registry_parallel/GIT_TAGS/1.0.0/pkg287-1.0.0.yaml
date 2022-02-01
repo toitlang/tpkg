@@ -1,0 +1,4 @@
+name: pkg287
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg287
+version: 1.0.0

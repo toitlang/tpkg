@@ -1,0 +1,4 @@
+name: pkg78
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg78
+version: 1.0.0

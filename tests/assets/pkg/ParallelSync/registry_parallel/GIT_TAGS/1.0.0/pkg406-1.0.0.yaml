@@ -1,0 +1,4 @@
+name: pkg406
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg406
+version: 1.0.0

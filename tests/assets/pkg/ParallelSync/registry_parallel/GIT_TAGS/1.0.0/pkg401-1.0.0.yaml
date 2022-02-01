@@ -1,0 +1,4 @@
+name: pkg401
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg401
+version: 1.0.0

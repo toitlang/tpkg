@@ -1,0 +1,4 @@
+name: pkg337
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg337
+version: 1.0.0

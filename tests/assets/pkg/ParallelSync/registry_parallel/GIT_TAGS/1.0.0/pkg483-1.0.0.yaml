@@ -1,0 +1,4 @@
+name: pkg483
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg483
+version: 1.0.0

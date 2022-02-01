@@ -1,0 +1,4 @@
+name: pkg377
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg377
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg142
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg142
+version: 1.0.0

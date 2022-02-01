@@ -1,0 +1,4 @@
+name: pkg319
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg319
+version: 1.0.0

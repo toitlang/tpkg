@@ -1,0 +1,4 @@
+name: pkg327
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg327
+version: 1.0.0

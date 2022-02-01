@@ -1,0 +1,4 @@
+name: pkg303
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg303
+version: 1.0.0

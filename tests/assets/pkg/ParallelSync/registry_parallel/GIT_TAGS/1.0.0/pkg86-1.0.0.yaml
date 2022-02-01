@@ -1,0 +1,4 @@
+name: pkg86
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg86
+version: 1.0.0

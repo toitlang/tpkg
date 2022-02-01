@@ -1,0 +1,4 @@
+name: pkg53
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg53
+version: 1.0.0

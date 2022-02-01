@@ -1,0 +1,4 @@
+name: pkg280
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg280
+version: 1.0.0

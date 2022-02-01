@@ -1,0 +1,4 @@
+name: pkg168
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg168
+version: 1.0.0

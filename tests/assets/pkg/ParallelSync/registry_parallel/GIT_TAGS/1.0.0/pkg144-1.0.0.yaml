@@ -1,0 +1,4 @@
+name: pkg144
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg144
+version: 1.0.0

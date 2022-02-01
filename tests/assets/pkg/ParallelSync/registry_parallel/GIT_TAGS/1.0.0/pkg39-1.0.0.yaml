@@ -1,0 +1,4 @@
+name: pkg39
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg39
+version: 1.0.0

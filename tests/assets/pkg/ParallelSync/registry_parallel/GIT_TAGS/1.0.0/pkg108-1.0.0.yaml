@@ -1,0 +1,4 @@
+name: pkg108
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg108
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg320
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg320
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg92
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg92
+version: 1.0.0
