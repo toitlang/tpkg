@@ -359,7 +359,7 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 		}
 
 		unlocked := make(chan struct{})
-		ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		ctx, cancel := context.WithTimeout(ctx, time.Minute*3)
 		defer cancel()
 
 		// The following has a race condition:
