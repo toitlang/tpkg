@@ -1,0 +1,4 @@
+name: pkg113
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg113
+version: 1.0.0

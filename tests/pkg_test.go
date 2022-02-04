@@ -30,6 +30,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -1533,5 +1534,26 @@ func test_toitPkg(t *tedi.T) {
 			{"pkg", "install", "foo"},
 			{"exec", "main.toit"},
 		})
+	})
+
+	t.Run("ParallelSync", func(pt PkgTest) {
+		regPath1 := filepath.Join(pt.dir, "registry_parallel")
+		pt.GoldToit("add_registry", [][]string{
+			{"pkg", "registry", "add", "test-reg", regPath1},
+		})
+		deleteRegCache(t, pt, regPath1)
+
+		wg := sync.WaitGroup{}
+		for i := 0; i < 3; i++ {
+			current := i
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				pt.GoldToit(fmt.Sprint("test", current), [][]string{
+					{"pkg", "sync"},
+				})
+			}()
+		}
+		wg.Wait()
 	})
 }

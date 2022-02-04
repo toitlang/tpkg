@@ -1,0 +1,4 @@
+name: pkg156
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg156
+version: 1.0.0

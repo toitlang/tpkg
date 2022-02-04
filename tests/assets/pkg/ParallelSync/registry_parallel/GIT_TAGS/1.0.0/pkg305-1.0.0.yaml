@@ -1,0 +1,4 @@
+name: pkg305
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg305
+version: 1.0.0

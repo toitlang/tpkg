@@ -1,0 +1,4 @@
+name: pkg19
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg19
+version: 1.0.0

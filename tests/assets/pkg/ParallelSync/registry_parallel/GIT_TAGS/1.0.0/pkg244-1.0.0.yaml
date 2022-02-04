@@ -1,0 +1,4 @@
+name: pkg244
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg244
+version: 1.0.0

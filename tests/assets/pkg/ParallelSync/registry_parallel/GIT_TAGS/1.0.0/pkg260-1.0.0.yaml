@@ -1,0 +1,4 @@
+name: pkg260
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg260
+version: 1.0.0

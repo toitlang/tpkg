@@ -1,0 +1,2 @@
+pkg registry add test-reg <TEST>/registry_parallel
+Exit Code: 0

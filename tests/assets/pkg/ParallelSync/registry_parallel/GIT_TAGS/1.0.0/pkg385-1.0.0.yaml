@@ -1,0 +1,4 @@
+name: pkg385
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg385
+version: 1.0.0

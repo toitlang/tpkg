@@ -384,8 +384,24 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			return fmt.Errorf("unable to acquire sync lock %s", lockP)
 		}
 
-		if gr.path == "" {
+		// Check again whether the directory exists now.
+		// Another command could have downloaded it in the meantime.
+		info, err := os.Stat(p)
+		exists := true
+		if os.IsNotExist(err) {
+			exists = false
+		} else if err != nil {
+			return err
+		} else if !info.IsDir() {
+			return ui.ReportError("Path %p exists but is not a directory", p)
+		}
 
+		if exists {
+			err := git.Pull(p, git.PullOptions{})
+			if err != nil {
+				return err
+			}
+		} else {
 			url := gr.url
 
 			var err error
@@ -412,15 +428,12 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 				return err
 			}
 			gr.path = p
-		} else {
-			err := git.Pull(p, git.PullOptions{})
-			if err != nil {
-				return err
-			}
 		}
 	}
 	if gr.path == "" {
 		// The repository was never cloned. Don't try to load anything.
+		// We don't check again. If another process downloaded the registry in the meantime
+		// we don't see it here.
 		return nil
 	}
 	return gr.pathRegistry.Load(ctx, sync, cache, ui)

@@ -1,0 +1,4 @@
+name: pkg65
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg65
+version: 1.0.0

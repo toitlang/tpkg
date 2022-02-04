@@ -1,0 +1,4 @@
+name: pkg21
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg21
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg315
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg315
+version: 1.0.0

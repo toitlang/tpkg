@@ -1,0 +1,4 @@
+name: pkg353
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg353
+version: 1.0.0

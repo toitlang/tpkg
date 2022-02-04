@@ -1,0 +1,4 @@
+name: pkg308
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg308
+version: 1.0.0

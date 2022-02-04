@@ -1,0 +1,4 @@
+name: pkg228
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg228
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg434
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg434
+version: 1.0.0

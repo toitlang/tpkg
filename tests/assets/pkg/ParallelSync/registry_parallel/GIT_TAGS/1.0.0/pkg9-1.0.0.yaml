@@ -1,0 +1,4 @@
+name: pkg9
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg9
+version: 1.0.0

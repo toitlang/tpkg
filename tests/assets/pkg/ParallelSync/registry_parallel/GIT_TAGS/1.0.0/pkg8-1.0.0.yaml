@@ -1,0 +1,4 @@
+name: pkg8
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg8
+version: 1.0.0

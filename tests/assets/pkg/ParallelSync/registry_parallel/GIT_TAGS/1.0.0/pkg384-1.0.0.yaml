@@ -1,0 +1,4 @@
+name: pkg384
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg384
+version: 1.0.0

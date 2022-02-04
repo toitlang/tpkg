@@ -1,0 +1,4 @@
+name: pkg170
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg170
+version: 1.0.0

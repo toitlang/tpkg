@@ -1,0 +1,4 @@
+name: pkg128
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg128
+version: 1.0.0
