@@ -78,21 +78,10 @@ func (vc *Viper) Load(ctx context.Context) (*commands.Config, error) {
 		result.RegistryConfigs = tpkg.RegistryConfigs{}
 	}
 
-	if vc.noAutosync {
-		sync := false
-		result.Autosync = &sync
-	} else if viper.IsSet(configKeyAutosync) {
-		sync := viper.GetBool(configKeyAutosync)
-		result.Autosync = &sync
-	}
-
 	return &result, nil
 }
 
 func (vc *Viper) Store(ctx context.Context, cfg *commands.Config) error {
-	if cfg.Autosync != nil {
-		viper.Set(configKeyAutosync, *cfg.Autosync)
-	}
 	if cfg.RegistryConfigs != nil {
 		viper.Set(configKeyRegistries, cfg.RegistryConfigs)
 	}

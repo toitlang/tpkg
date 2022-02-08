@@ -429,6 +429,9 @@ func (pt PkgTest) runToit(args ...string) (string, error) {
 	} else if args[0] == "exec" {
 		cmd, err = pt.toitExec.RunInDir(pt.ctx, dir, args[1:]...)
 	} else {
+		if pt.noAutoSync {
+			args = append([]string{args[0], "--auto-sync=false"}, args[1:]...)
+		}
 		cmd, err = pt.toitpkg.RunInDir(pt.ctx, dir, args...)
 		cmd.Env = append(cmd.Env, "TOIT_CONFIG_FILE="+filepath.Join(pt.dir, "config.yaml"))
 		cmd.Env = append(cmd.Env, "TOIT_CACHE_DIR="+filepath.Join(pt.dir, cacheDir))
@@ -438,9 +441,6 @@ func (pt PkgTest) runToit(args ...string) (string, error) {
 		}
 		if pt.shouldPrintTracking {
 			cmd.Env = append(cmd.Env, "TOIT_SHOULD_PRINT_TRACKING=true")
-		}
-		if pt.noAutoSync {
-			cmd.Env = append(cmd.Env, "TOIT_NO_AUTO_SYNC=true")
 		}
 	}
 	env := cmd.Env
@@ -551,7 +551,7 @@ func (pt PkgTest) checkGold(name string, actual string) {
 		}
 	}
 	filteredGold := strings.Join(filtered, "\n")
-	require.Equal(pt.t, filteredGold, actual)
+	assert.Equal(pt.t, filteredGold, actual)
 }
 
 func (pt PkgTest) buildActual(args ...string) string {

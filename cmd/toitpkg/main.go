@@ -82,5 +82,6 @@ func main() {
 		}
 	}
 	rootCmd.AddCommand(pkgCmd)
+	rootCmd.PersistentFlags().Bool("auto-sync", true, "automatically synchronize registries")
 	rootCmd.Execute()
 }

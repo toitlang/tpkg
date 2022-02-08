@@ -53,7 +53,6 @@ type Config struct {
 	// Note that viper changes empty lists to `nil` so it's important to
 	// check for that case.
 	RegistryConfigs tpkg.RegistryConfigs
-	Autosync        *bool
 }
 
 var defaultRegistry = tpkg.RegistryConfig{
@@ -67,13 +66,6 @@ func (h *pkgHandler) getRegistryConfigsOrDefault() tpkg.RegistryConfigs {
 		return h.cfg.RegistryConfigs
 	}
 	return []tpkg.RegistryConfig{defaultRegistry}
-}
-
-func (h *pkgHandler) shouldAutoSync() bool {
-	if h.cfg.Autosync != nil {
-		return *h.cfg.Autosync
-	}
-	return true
 }
 
 func (h *pkgHandler) hasRegistryConfigs() bool {
@@ -111,12 +103,17 @@ func (h *pkgHandler) buildCache() (tpkg.Cache, error) {
 	return tpkg.NewCache(registryPath, h.ui, options...), nil
 }
 
-func (h *pkgHandler) buildManager(ctx context.Context) (*tpkg.Manager, error) {
+func (h *pkgHandler) buildManager(ctx context.Context, cmd *cobra.Command) (*tpkg.Manager, error) {
 	cache, err := h.buildCache()
 	if err != nil {
 		return nil, err
 	}
-	registries, err := h.loadUserRegistries(ctx, cache)
+	shouldAutoSync, err := cmd.Flags().GetBool("auto-sync")
+	if err != nil {
+		return nil, err
+	}
+
+	registries, err := h.loadUserRegistries(ctx, shouldAutoSync, cache)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +129,7 @@ func (h *pkgHandler) buildProjectPkgManager(cmd *cobra.Command, shouldSyncRegist
 	if err != nil {
 		return nil, err
 	}
-	manager, err := h.buildManager(cmd.Context())
+	manager, err := h.buildManager(cmd.Context(), cmd)
 	if err != nil {
 		return nil, err
 	}
@@ -189,7 +186,8 @@ func Pkg(run Run, track tracking.Track, configStore ConfigStore, ui tpkg.UI) (*c
 		Use:   "pkg",
 		Short: "Manage packages",
 	}
-	cmd.PersistentFlags().String("project-root", "", "Specify the project root")
+	cmd.PersistentFlags().String("project-root", "", "specify the project root")
+	cmd.PersistentFlags().Bool("auto-sync", true, "automatically synchronize registries")
 
 	initCmd := &cobra.Command{
 		Use:   "init",
@@ -481,7 +479,12 @@ var tpkgUI = tpkg.FmtUI
 
 func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
-	m, err := h.buildProjectPkgManager(cmd, h.shouldAutoSync())
+
+	shouldAutoSync, err := cmd.Flags().GetBool("auto-sync")
+	if err != nil {
+		return err
+	}
+	m, err := h.buildProjectPkgManager(cmd, shouldAutoSync)
 
 	if err != nil {
 		return err
@@ -595,7 +598,11 @@ func (h *pkgHandler) pkgUninstall(cmd *cobra.Command, args []string) error {
 
 func (h *pkgHandler) pkgUpdate(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
-	m, err := h.buildProjectPkgManager(cmd, h.shouldAutoSync())
+	shouldAutoSync, err := cmd.Flags().GetBool("auto-sync")
+	if err != nil {
+		return err
+	}
+	m, err := h.buildProjectPkgManager(cmd, shouldAutoSync)
 	if err != nil {
 		return err
 	}
@@ -643,9 +650,9 @@ func (h *pkgHandler) pkgInit(cmd *cobra.Command, args []string) error {
 }
 
 // Loads all registries as specified by the user's configuration.
-func (h *pkgHandler) loadUserRegistries(ctx context.Context, cache tpkg.Cache) ([]tpkg.Registry, error) {
+func (h *pkgHandler) loadUserRegistries(ctx context.Context, shouldAutoSync bool, cache tpkg.Cache) ([]tpkg.Registry, error) {
 	configs := h.getRegistryConfigsOrDefault()
-	return configs.Load(ctx, h.shouldAutoSync(), cache, h.ui)
+	return configs.Load(ctx, shouldAutoSync, cache, h.ui)
 }
 
 func printDesc(d *tpkg.Desc, indent string, isVerbose bool, isJson bool) {
@@ -689,7 +696,11 @@ func (h *pkgHandler) pkgList(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	registries, err := h.loadUserRegistries(ctx, cache)
+	shouldAutoSync, err := cmd.Flags().GetBool("auto-sync")
+	if err != nil {
+		return err
+	}
+	registries, err := h.loadUserRegistries(ctx, shouldAutoSync, cache)
 	if err != nil {
 		return err
 	}
@@ -902,7 +913,11 @@ func (h *pkgHandler) pkgSearch(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	registries, err := h.loadUserRegistries(ctx, cache)
+	shouldAutoSync, err := cmd.Flags().GetBool("auto-sync")
+	if err != nil {
+		return err
+	}
+	registries, err := h.loadUserRegistries(ctx, shouldAutoSync, cache)
 	if err != nil {
 		return err
 	}
