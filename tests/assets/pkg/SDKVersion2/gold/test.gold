@@ -1,0 +1,7 @@
+pkg install
+Exit Code: 0
+===================
+pkg lockfile
+Exit Code: 0
+sdk: ^0.1.0
+

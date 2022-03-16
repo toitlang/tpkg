@@ -1536,6 +1536,49 @@ func test_toitPkg(t *tedi.T) {
 		})
 	})
 
+	t.Run("SDKVersion2", func(pt PkgTest) {
+		pt.GoldToit("test", [][]string{
+			{"pkg", "install"},
+			{"pkg", "lockfile"},
+		})
+	})
+
+	t.Run("SDKVersion3", func(pt PkgTest) {
+		regPath1 := filepath.Join(pt.dir, "registry")
+		pt.sdkVersion = "0.1.10"
+		pt.GoldToit("test", [][]string{
+			{"pkg", "registry", "add", "--local", "test-reg", regPath1},
+			{"// sdkVersion = 0.1.10"},
+			{"pkg", "install", "foo"},
+			{"pkg", "lockfile"},
+		})
+		pt.sdkVersion = ""
+		// A new 'install' doesn't change the selected lock files, even though
+		// our version is now better.
+		pt.GoldToit("test2", [][]string{
+			{"// sdkVersion = "},
+			{"pkg", "install"},
+			{"pkg", "lockfile"},
+		})
+		// Modifying the version constraint in the package.spec is copied to the
+		// lock file.
+		packageSpecPath := filepath.Join(pt.dir, "package.yaml")
+		data, err := ioutil.ReadFile(packageSpecPath)
+		assert.NoError(t, err)
+		str := string(data) + `
+environment:
+  sdk: ^1.20.0
+`
+		err = ioutil.WriteFile(packageSpecPath, []byte(str), 0644)
+		assert.NoError(t, err)
+		pt.GoldToit("test3", [][]string{
+			{"// sdkVersion = "},
+			{"pkg", "install"},
+			{"// Lockfile now has 1.20 SDK constraint."},
+			{"pkg", "lockfile"},
+		})
+	})
+
 	t.Run("ParallelSync", func(pt PkgTest) {
 		regPath1 := filepath.Join(pt.dir, "registry_parallel")
 		pt.GoldToit("add_registry", [][]string{
