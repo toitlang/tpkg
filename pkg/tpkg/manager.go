@@ -391,7 +391,7 @@ func (m *ProjectPkgManager) InstallLocalPkg(ctx context.Context, name string, pa
 		return "", err
 	}
 
-	solution, err := m.findSolution(spec.Environment.sdk, solverDeps, lf, nil)
+	solution, err := m.findSolution(spec.Environment.SDK, solverDeps, lf, nil)
 	if err != nil {
 		return "", err
 	}
@@ -484,7 +484,7 @@ func (m *ProjectPkgManager) InstallURLPkg(ctx context.Context, name string, id s
 		}
 	}
 
-	solution, err := m.findSolution(spec.Environment.sdk, solverDeps, lf, unpreferred)
+	solution, err := m.findSolution(spec.Environment.SDK, solverDeps, lf, unpreferred)
 	if err != nil {
 		return "", "", err
 	}
@@ -577,6 +577,8 @@ func (m *ProjectPkgManager) Install(ctx context.Context, forceRecompute bool) er
 	needsToSolve := false
 	if forceRecompute || lf == nil {
 		needsToSolve = true
+	} else if spec.Environment.SDK != lf.SDK {
+		needsToSolve = true
 	} else {
 		for _, pkg := range lf.Packages {
 			if pkg.Path != "" {
@@ -654,7 +656,7 @@ func (m *ProjectPkgManager) findSolutionFromSpec(spec *Spec, oldLock *LockFile) 
 	if err != nil {
 		return nil, err
 	}
-	return m.findSolution(spec.Environment.sdk, solverDeps, oldLock, nil)
+	return m.findSolution(spec.Environment.SDK, solverDeps, oldLock, nil)
 
 }
 

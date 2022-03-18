@@ -1,0 +1,17 @@
+// sdkVersion = 
+===================
+pkg install
+Exit Code: 0
+===================
+// Lockfile now has 1.20 SDK constraint.
+===================
+pkg lockfile
+Exit Code: 0
+sdk: ^1.20.0
+prefixes:
+  foo: foo_git
+packages:
+  foo_git:
+    url: <GIT_URL>/foo_git
+    version: 1.1.0
+

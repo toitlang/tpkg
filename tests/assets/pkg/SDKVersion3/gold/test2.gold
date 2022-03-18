@@ -1,0 +1,15 @@
+// sdkVersion = 
+===================
+pkg install
+Exit Code: 0
+===================
+pkg lockfile
+Exit Code: 0
+sdk: ^0.1.0
+prefixes:
+  foo: foo_git
+packages:
+  foo_git:
+    url: <GIT_URL>/foo_git
+    version: 1.1.0
+

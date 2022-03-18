@@ -1,0 +1,19 @@
+pkg registry add --local test-reg <TEST>/registry
+Exit Code: 0
+===================
+// sdkVersion = 0.1.10
+===================
+pkg install foo
+Exit Code: 0
+Info: Package '<GIT_URL>/foo_git@1.1.0' installed with name 'foo'
+===================
+pkg lockfile
+Exit Code: 0
+sdk: ^0.1.0
+prefixes:
+  foo: foo_git
+packages:
+  foo_git:
+    url: <GIT_URL>/foo_git
+    version: 1.1.0
+
