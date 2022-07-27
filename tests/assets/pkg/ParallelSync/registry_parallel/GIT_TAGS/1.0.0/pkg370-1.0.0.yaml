@@ -1,0 +1,4 @@
+name: pkg370
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg370
+version: 1.0.0

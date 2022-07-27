@@ -1,0 +1,4 @@
+name: pkg214
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg214
+version: 1.0.0

@@ -9,7 +9,7 @@ test-reg: <TEST>/registry:
     url: <GIT_URL>/bar_git
     version: 2.0.1
     environment:
-      sdk: ^1.1.20
+      sdk: ^0.1.20
     license: MIT
     Dependencies:
       <GIT_URL>/foo_git - 1.2.3
@@ -19,14 +19,14 @@ test-reg: <TEST>/registry:
     url: <GIT_URL>/foo_git
     version: 1.1.0
     environment:
-      sdk: ^1.1.0
+      sdk: ^0.1.0
     
   foo:
     description: Description of foo. foo-desc.
     url: <GIT_URL>/foo_git
     version: 1.2.3
     environment:
-      sdk: ^1.1.30
+      sdk: ^0.1.30
     
   sub:
     description: Description of sub. sub-desc
@@ -43,50 +43,3 @@ test-reg: <TEST>/registry:
 ===================
 pkg init
 Exit Code: 0
-===================
-pkg --sdk-version=0.0.0 install foo
-Exit Code: 1
-Warning: No version of '<GIT_URL>/foo_git' exists for SDK version '0.0.0'
-Error: Couldn't find a valid solution for the package constraints
-===================
-pkg install foo
-Exit Code: 0
-Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
-===================
-::exec:: exec main.toit
-::exec:: Exit Code: 0
-::exec:: hello from foo 1.2.3
-::exec:: 
-::analyze:: analyze main.toit
-::analyze:: Exit Code: 0
-::analyze:: 
-===================
-pkg uninstall foo
-Exit Code: 0
-===================
-pkg --sdk-version=1.1.10 install foo
-Exit Code: 0
-Info: Package '<GIT_URL>/foo_git@1.1.0' installed with name 'foo'
-===================
-::exec:: exec main.toit
-::exec:: Exit Code: 0
-::exec:: hello from foo 1.1.0
-::exec:: 
-::analyze:: analyze main.toit
-::analyze:: Exit Code: 0
-::analyze:: 
-===================
-pkg uninstall foo
-Exit Code: 0
-===================
-pkg install foo
-Exit Code: 0
-Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
-===================
-::exec:: exec main.toit
-::exec:: Exit Code: 0
-::exec:: hello from foo 1.2.3
-::exec:: 
-::analyze:: analyze main.toit
-::analyze:: Exit Code: 0
-::analyze:: 

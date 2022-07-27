@@ -1,0 +1,5 @@
+*.go text eol=lf
+*.toit text eol=lf
+*.gold text eol=lf
+package.lock text eol=lf
+package.yaml text eol=lf

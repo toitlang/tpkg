@@ -1,0 +1,4 @@
+name: pkg388
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg388
+version: 1.0.0

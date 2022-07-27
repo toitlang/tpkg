@@ -1,4 +1,4 @@
-pkg --track registry add test-reg <TEST>/registry_git_pkgs
+pkg registry add test-reg <TEST>/registry_git_pkgs
 Exit Code: 0
 Name: toit pkg registry add
 Properties:
@@ -6,10 +6,10 @@ Properties:
   name: test-reg
   url: <TEST>/registry_git_pkgs
 ===================
-pkg --track init
+pkg init
 Exit Code: 0
 ===================
-pkg --track install pkg3
+pkg install pkg3
 Exit Code: 0
 Name: toit pkg download-git
 Properties:
@@ -22,19 +22,19 @@ Properties:
   install_name: pkg3
   package: <GIT_URL>/git_pkgs/pkg3@3.1.2
 ===================
-pkg --track install
+pkg install
 Exit Code: 0
 Name: toit pkg install
 Properties:
   recompute: false
 ===================
-pkg --track install --recompute
+pkg install --recompute
 Exit Code: 0
 Name: toit pkg install
 Properties:
   recompute: true
 ===================
-pkg --track search pkg
+pkg search pkg
 Exit Code: 0
 Name: toit pkg search
 Properties:
@@ -44,14 +44,14 @@ pkg2 - 2.4.2
 pkg3 - 3.1.2
 pkg4 - 4.9.9
 ===================
-pkg --track registry remove test-reg
+pkg registry remove test-reg
 Exit Code: 0
 Name: toit pkg registry remove
 Properties:
   name: test-reg
   path: <TEST>/registry_git_pkgs
 ===================
-pkg --track describe github.com/toitware/toit-morse v1.0.0
+pkg describe github.com/toitware/toit-morse v1.0.0
 Exit Code: 0
 Name: toit pkg describe
 Properties:

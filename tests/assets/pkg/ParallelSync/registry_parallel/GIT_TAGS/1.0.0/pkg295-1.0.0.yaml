@@ -1,0 +1,4 @@
+name: pkg295
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg295
+version: 1.0.0

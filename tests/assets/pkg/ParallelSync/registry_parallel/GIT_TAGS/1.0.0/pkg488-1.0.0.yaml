@@ -1,0 +1,4 @@
+name: pkg488
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg488
+version: 1.0.0

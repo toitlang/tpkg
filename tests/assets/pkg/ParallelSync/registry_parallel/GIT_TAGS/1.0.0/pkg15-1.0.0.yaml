@@ -1,0 +1,4 @@
+name: pkg15
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg15
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg479
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg479
+version: 1.0.0

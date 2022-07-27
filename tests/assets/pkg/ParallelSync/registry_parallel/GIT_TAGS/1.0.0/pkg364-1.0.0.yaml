@@ -1,0 +1,4 @@
+name: pkg364
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg364
+version: 1.0.0

@@ -30,6 +30,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/go-git/go-git/v5"
@@ -123,20 +124,23 @@ const gitTagsDir string = "GIT_TAGS"
 type TestDirectory string
 
 type PkgTest struct {
-	dir                string
-	overwriteRunDir    string
-	t                  *tedi.T
-	ctx                context.Context
-	toitpkg            *toitCmd
-	toitAnalyze        *toitCmd
-	toitExec           *toitCmd
-	goldRepls          map[string]string
-	pkgDir             string
-	cacheDir           string
-	pkgCacheDir        string
-	registryCacheDir   string
-	useDefaultRegistry bool
-	env                map[string]string
+	dir                 string
+	overwriteRunDir     string
+	t                   *tedi.T
+	ctx                 context.Context
+	toitpkg             *toitCmd
+	toitAnalyze         *toitCmd
+	toitExec            *toitCmd
+	goldRepls           map[string]string
+	pkgDir              string
+	cacheDir            string
+	pkgCacheDir         string
+	registryCacheDir    string
+	useDefaultRegistry  bool
+	shouldPrintTracking bool
+	noAutoSync          bool
+	sdkVersion          string
+	env                 map[string]string
 }
 
 func computeAssetDir(t *tedi.T) string {
@@ -425,15 +429,19 @@ func (pt PkgTest) runToit(args ...string) (string, error) {
 	} else if args[0] == "exec" {
 		cmd, err = pt.toitExec.RunInDir(pt.ctx, dir, args[1:]...)
 	} else {
-		runFlags := []string{
-			"--cache", filepath.Join(pt.dir, cacheDir),
-			"--config", filepath.Join(pt.dir, "config.yaml"),
-			"--no-default-registry",
+		if pt.noAutoSync {
+			args = append([]string{args[0], "--auto-sync=false"}, args[1:]...)
 		}
-		if pt.useDefaultRegistry {
-			runFlags = runFlags[:len(runFlags)-1]
+		cmd, err = pt.toitpkg.RunInDir(pt.ctx, dir, args...)
+		cmd.Env = append(cmd.Env, "TOIT_CONFIG_FILE="+filepath.Join(pt.dir, "config.yaml"))
+		cmd.Env = append(cmd.Env, "TOIT_CACHE_DIR="+filepath.Join(pt.dir, cacheDir))
+		cmd.Env = append(cmd.Env, "TOIT_SDK_VERSION= "+pt.sdkVersion)
+		if !pt.useDefaultRegistry {
+			cmd.Env = append(cmd.Env, "TOIT_NO_DEFAULT_REGISTRY=true")
 		}
-		cmd, err = pt.toitpkg.RunInDir(pt.ctx, dir, append(runFlags, args...)...)
+		if pt.shouldPrintTracking {
+			cmd.Env = append(cmd.Env, "TOIT_SHOULD_PRINT_TRACKING=true")
+		}
 	}
 	env := cmd.Env
 	for k, v := range pt.env {
@@ -543,7 +551,7 @@ func (pt PkgTest) checkGold(name string, actual string) {
 		}
 	}
 	filteredGold := strings.Join(filtered, "\n")
-	require.Equal(pt.t, filteredGold, actual)
+	assert.Equal(pt.t, filteredGold, actual)
 }
 
 func (pt PkgTest) buildActual(args ...string) string {
@@ -1050,8 +1058,7 @@ func test_toitPkg(t *tedi.T) {
 
 		deleteRegCache(t, pt, regPath)
 
-		pt.toitpkg.args = append([]string{"--no-autosync"}, pt.toitpkg.args...)
-
+		pt.noAutoSync = true
 		pt.GoldToit("test-no-autosync", [][]string{
 			{"// Without sync there shouldn't be any packages"},
 			{"pkg", "list"},
@@ -1079,7 +1086,7 @@ func test_toitPkg(t *tedi.T) {
 				// No autosync for the second pass.
 				suffix = "-no-autosync"
 				yamlFile = "pkg_test2.yaml"
-				pt.toitpkg.args = append([]string{"--no-autosync"}, pt.toitpkg.args...)
+				pt.noAutoSync = true
 			}
 
 			pt.GoldToit("test-1"+suffix, [][]string{
@@ -1475,17 +1482,18 @@ func test_toitPkg(t *tedi.T) {
 
 	t.Run("Tracking", func(t *tedi.T, pt PkgTest) {
 		regPath1 := filepath.Join(pt.dir, "registry_git_pkgs")
+		pt.env["TOIT_SHOULD_PRINT_TRACKING"] = "true"
 		pt.GoldToit("test", [][]string{
-			{"pkg", "--track", "registry", "add", "test-reg", regPath1},
-			{"pkg", "--track", "init"},
+			{"pkg", "registry", "add", "test-reg", regPath1},
+			{"pkg", "init"},
 			// Note that the order of downloading packages is not deterministic.
 			// For simplicity we therefore install a package without dependencies.
-			{"pkg", "--track", "install", "pkg3"},
-			{"pkg", "--track", "install"},
-			{"pkg", "--track", "install", "--recompute"},
-			{"pkg", "--track", "search", "pkg"},
-			{"pkg", "--track", "registry", "remove", "test-reg"},
-			{"pkg", "--track", "describe", "github.com/toitware/toit-morse", "v1.0.0"},
+			{"pkg", "install", "pkg3"},
+			{"pkg", "install"},
+			{"pkg", "install", "--recompute"},
+			{"pkg", "search", "pkg"},
+			{"pkg", "registry", "remove", "test-reg"},
+			{"pkg", "describe", "github.com/toitware/toit-morse", "v1.0.0"},
 		})
 	})
 
@@ -1502,15 +1510,93 @@ func test_toitPkg(t *tedi.T) {
 			{"pkg", "registry", "add", "--local", "test-reg", regPath1},
 			{"pkg", "list", "--verbose"},
 			{"pkg", "init"},
-			{"pkg", "--sdk-version=0.0.0", "install", "foo"},
+		})
+		pt.sdkVersion = "0.0.0"
+		pt.GoldToit("test2", [][]string{
+			{"// sdkVersion = 0.0.0"},
+			{"pkg", "install", "foo"},
+		})
+		pt.sdkVersion = ""
+		pt.GoldToit("test3", [][]string{
 			{"pkg", "install", "foo"},
 			{"exec", "main.toit"},
 			{"pkg", "uninstall", "foo"},
-			{"pkg", "--sdk-version=1.1.10", "install", "foo"},
+		})
+		pt.sdkVersion = "0.1.10"
+		pt.GoldToit("test4", [][]string{
+			{"// sdkVersion = 0.1.10"},
+			{"pkg", "install", "foo"},
+		})
+		pt.sdkVersion = ""
+		pt.GoldToit("test5", [][]string{
 			{"exec", "main.toit"},
 			{"pkg", "uninstall", "foo"},
 			{"pkg", "install", "foo"},
 			{"exec", "main.toit"},
 		})
+	})
+
+	t.Run("SDKVersion2", func(pt PkgTest) {
+		pt.GoldToit("test", [][]string{
+			{"pkg", "install"},
+			{"pkg", "lockfile"},
+		})
+	})
+
+	t.Run("SDKVersion3", func(pt PkgTest) {
+		regPath1 := filepath.Join(pt.dir, "registry")
+		pt.sdkVersion = "0.1.10"
+		pt.GoldToit("test", [][]string{
+			{"pkg", "registry", "add", "--local", "test-reg", regPath1},
+			{"// sdkVersion = 0.1.10"},
+			{"pkg", "install", "foo"},
+			{"pkg", "lockfile"},
+		})
+		pt.sdkVersion = ""
+		// A new 'install' doesn't change the selected lock files, even though
+		// our version is now better.
+		pt.GoldToit("test2", [][]string{
+			{"// sdkVersion = "},
+			{"pkg", "install"},
+			{"pkg", "lockfile"},
+		})
+		// Modifying the version constraint in the package.spec is copied to the
+		// lock file.
+		packageSpecPath := filepath.Join(pt.dir, "package.yaml")
+		data, err := ioutil.ReadFile(packageSpecPath)
+		assert.NoError(t, err)
+		str := string(data) + `
+environment:
+  sdk: ^1.20.0
+`
+		err = ioutil.WriteFile(packageSpecPath, []byte(str), 0644)
+		assert.NoError(t, err)
+		pt.GoldToit("test3", [][]string{
+			{"// sdkVersion = "},
+			{"pkg", "install"},
+			{"// Lockfile now has 1.20 SDK constraint."},
+			{"pkg", "lockfile"},
+		})
+	})
+
+	t.Run("ParallelSync", func(pt PkgTest) {
+		regPath1 := filepath.Join(pt.dir, "registry_parallel")
+		pt.GoldToit("add_registry", [][]string{
+			{"pkg", "registry", "add", "test-reg", regPath1},
+		})
+		deleteRegCache(t, pt, regPath1)
+
+		wg := sync.WaitGroup{}
+		for i := 0; i < 3; i++ {
+			current := i
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				pt.GoldToit(fmt.Sprint("test", current), [][]string{
+					{"pkg", "sync"},
+				})
+			}()
+		}
+		wg.Wait()
 	})
 }

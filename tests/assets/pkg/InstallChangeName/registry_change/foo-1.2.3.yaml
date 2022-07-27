@@ -3,4 +3,4 @@ description: Description of foo. foo-desc.
 version: 1.2.3
 url: <[*TEST_GIT_DIR*]>/foo_name_git
 environment:
-  sdk: ^1.1.30
+  sdk: ^0.1.30

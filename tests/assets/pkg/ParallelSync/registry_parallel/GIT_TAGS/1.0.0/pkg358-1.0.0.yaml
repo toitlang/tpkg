@@ -1,0 +1,4 @@
+name: pkg358
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg358
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg250
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg250
+version: 1.0.0

@@ -1,0 +1,4 @@
+name: pkg223
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg223
+version: 1.0.0

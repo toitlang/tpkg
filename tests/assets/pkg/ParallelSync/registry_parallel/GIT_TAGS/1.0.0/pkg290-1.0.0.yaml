@@ -1,0 +1,4 @@
+name: pkg290
+description: git-package
+url: <[*TEST_GIT_DIR*]>/git_pkgs/pkg290
+version: 1.0.0

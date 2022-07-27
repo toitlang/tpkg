@@ -43,7 +43,7 @@ type Spec struct {
 }
 
 type SpecEnvironment struct {
-	sdk string `yaml:"sdk,omitempty"`
+	SDK string `yaml:"sdk,omitempty"`
 }
 
 // DependencyMap is a map from prefix to package.
@@ -93,8 +93,8 @@ func (s *Spec) Validate(ui UI) error {
 			return err
 		}
 	}
-	if s.Environment.sdk != "" {
-		sdk := s.Environment.sdk
+	if s.Environment.SDK != "" {
+		sdk := s.Environment.SDK
 		if !strings.HasPrefix(sdk, "^") {
 			return ui.ReportError("SDK constraint must be of form '^version': '%s'", sdk)
 		}
