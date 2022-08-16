@@ -1,0 +1,45 @@
+pkg registry add --local test-reg <TEST>/registry
+Exit Code: 0
+===================
+pkg list --verbose
+Exit Code: 0
+test-reg: <TEST>/registry:
+  bar:
+    description: Description of bar. bar-desc.
+    url: <GIT_URL>/bar_git
+    version: 2.0.1
+    environment:
+      sdk: ^0.1.20
+    license: MIT
+    Dependencies:
+      <GIT_URL>/foo_git - 1.2.3
+      <GIT_URL>/sub_git - ^3.0.0
+  foo:
+    description: Description of foo. foo-desc.
+    url: <GIT_URL>/foo_git
+    version: 1.1.0
+    environment:
+      sdk: ^0.1.0
+    
+  foo:
+    description: Description of foo. foo-desc.
+    url: <GIT_URL>/foo_git
+    version: 1.2.3
+    environment:
+      sdk: ^0.1.30
+    
+  sub:
+    description: Description of sub. sub-desc
+    url: <GIT_URL>/sub_git
+    version: 2.0.0
+    license: MIT
+    
+  sub:
+    description: Description of sub. sub-desc
+    url: <GIT_URL>/sub_git
+    version: 3.1.4
+    license: MIT
+    
+===================
+pkg init
+Exit Code: 0
