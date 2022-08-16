@@ -173,7 +173,20 @@ func Pkg(run Run, track tracking.Track, configStore ConfigStore, ui tpkg.UI) (*c
 				}
 				handler.cfg = cfg
 			}
-			err := f(cmd, args)
+
+			sdkVersion, err := cmd.Flags().GetString("sdk-version")
+			if err != nil {
+				return err
+			}
+			if sdkVersion != "" {
+				v, err := version.NewVersion(sdkVersion)
+				if err != nil {
+					return err
+				}
+				handler.cfg.SDKVersion = v
+			}
+
+			err = f(cmd, args)
 
 			if tpkg.IsErrAlreadyReported(err) {
 				return newExitError(1)
@@ -188,6 +201,7 @@ func Pkg(run Run, track tracking.Track, configStore ConfigStore, ui tpkg.UI) (*c
 	}
 	cmd.PersistentFlags().String("project-root", "", "specify the project root")
 	cmd.PersistentFlags().Bool("auto-sync", true, "automatically synchronize registries")
+	cmd.PersistentFlags().String("sdk-version", "", "specify the SDK version")
 
 	initCmd := &cobra.Command{
 		Use:   "init",

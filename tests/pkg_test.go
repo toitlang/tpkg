@@ -1579,6 +1579,32 @@ environment:
 		})
 	})
 
+	t.Run("SDKVersionFlag", func(pt PkgTest) {
+		regPath1 := filepath.Join(pt.dir, "registry")
+		pt.GoldToit("test", [][]string{
+			{"pkg", "registry", "add", "--local", "test-reg", regPath1},
+			{"pkg", "list", "--verbose"},
+			{"pkg", "init"},
+		})
+		pt.GoldToit("test2", [][]string{
+			{"pkg", "--sdk-version", "v0.0.0", "install", "foo"},
+		})
+		pt.GoldToit("test3", [][]string{
+			{"pkg", "install", "foo"},
+			{"exec", "main.toit"},
+			{"pkg", "uninstall", "foo"},
+		})
+		pt.GoldToit("test4", [][]string{
+			{"pkg", "--sdk-version", "v0.1.10", "install", "foo"},
+		})
+		pt.GoldToit("test5", [][]string{
+			{"exec", "main.toit"},
+			{"pkg", "uninstall", "foo"},
+			{"pkg", "install", "foo"},
+			{"exec", "main.toit"},
+		})
+	})
+
 	t.Run("ParallelSync", func(pt PkgTest) {
 		regPath1 := filepath.Join(pt.dir, "registry_parallel")
 		pt.GoldToit("add_registry", [][]string{

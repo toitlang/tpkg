@@ -1,0 +1,14 @@
+pkg install foo
+Exit Code: 0
+Info: Package '<GIT_URL>/foo_git@1.2.3' installed with name 'foo'
+===================
+::exec:: exec main.toit
+::exec:: Exit Code: 0
+::exec:: hello from foo 1.2.3
+::exec:: 
+::analyze:: analyze main.toit
+::analyze:: Exit Code: 0
+::analyze:: 
+===================
+pkg uninstall foo
+Exit Code: 0
