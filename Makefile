@@ -32,7 +32,6 @@ toitpkg: $(BUILD_DIR)/toitpkg
 
 TEST_FLAGS ?=
 .PHONY: test
-test: export TOITPKG_PATH = $(shell pwd)/$(BUILD_DIR)/toitpkg$(EXE_SUFFIX)
 test: toitpkg $(GO_MOCKS)
 	tedi test -v -cover $(TEST_FLAGS) ./...
 
