@@ -35,6 +35,11 @@ TEST_FLAGS ?=
 test: toitpkg $(GO_MOCKS)
 	tedi test -v -cover $(TEST_FLAGS) ./...
 
+.PHONY: update-gold
+update-gold: export UPDATE_PKG_GOLD = true
+update-gold:
+	$(MAKE) test
+
 .PHONY: clean
 clean:
 	rm -rf ./$(BUILD_DIR)
