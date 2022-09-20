@@ -9,9 +9,9 @@ prefixes:
   gee: slash
 packages:
   path:
-    path: /some/abs/path
+    path: /c:/some/abs/path
   slash:
-    path: /some/other/abs/path/with/slash
+    path: /c:/some/other/abs/path/with/slash
   xxx:
     path: xxx
 

@@ -2,6 +2,6 @@ dependencies:
   foo:
     path: xxx
   bar:
-    path: /some/abs/path
+    path: /c:/some/abs/path
   gee:
-    path: /some/other/abs/path/with/slash/
+    path: /c:/some/other/abs/path/with/slash/
