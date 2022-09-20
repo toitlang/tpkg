@@ -1,0 +1,17 @@
+pkg install
+Exit Code: 0
+===================
+pkg lockfile
+Exit Code: 0
+prefixes:
+  bar: path
+  foo: xxx
+  gee: slash
+packages:
+  path:
+    path: /c:/some/abs/path
+  slash:
+    path: /c:/some/other/abs/path/with/slash
+  xxx:
+    path: xxx
+

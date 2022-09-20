@@ -1012,6 +1012,13 @@ func test_toitPkg(t *tedi.T) {
 		})
 	})
 
+	t.Run("InstallAbsLocal", func(t *tedi.T, pt PkgTest) {
+		pt.GoldToit("test", [][]string{
+			{"pkg", "install"},
+			{"pkg", "lockfile"},
+		})
+	})
+
 	t.Run("RegistrySkipHidden", func(t *tedi.T, pt PkgTest) {
 		regPath := filepath.Join(pt.dir, "reg_with_hidden")
 		pt.GoldToit("test", [][]string{

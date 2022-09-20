@@ -244,8 +244,9 @@ func (s *Spec) BuildLockFile(solution *Solution, cache Cache, registries Registr
 			p := specPkg.Path.FilePath()
 			fullPath := p
 			if !filepath.IsAbs(fullPath) {
-				fullPath = filepath.Clean(filepath.Join(dir, p))
+				fullPath = filepath.Join(dir, p)
 			}
+			fullPath = filepath.Clean(fullPath)
 			targetID, ok := localPkgIDs[fullPath]
 			if !ok {
 				targetID = fmt.Sprintf("localPkg%d", idCounter)
