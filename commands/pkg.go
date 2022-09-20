@@ -257,7 +257,7 @@ contain local packages.
   toit pkg install morse
 
   # Install the package 'morse' with an alternative name.
-	# Programs would use this package with 'import alt_morse.morse'.
+  # Programs would use this package with 'import alt_morse.morse'.
   toit pkg install morse --name=alt_morse
 
   # Install the version 1.0.0 of the package 'morse'.
