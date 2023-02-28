@@ -601,7 +601,14 @@ func (m *ProjectPkgManager) Install(ctx context.Context, forceRecompute bool) er
 		return err
 	}
 
-	return m.writeSpecAndLock(spec, updatedLock)
+	// We only need to write the lock file, because the spec
+	// file hasn't changed. This has the really important added
+	// benefit that we avoid read/write contention on the spec
+	// files that are accessed through paths. Without this, it
+	// is easy to run into reading partially written specs when
+	// installing dependencies in parallel across multiple
+	// projects.
+	return updatedLock.WriteToFile()
 }
 
 func (m *ProjectPkgManager) Update(ctx context.Context) error {
