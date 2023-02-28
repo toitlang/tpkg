@@ -198,7 +198,9 @@ func (lf *LockFile) optimizePkgIDs() {
 		url := entry.URL.URL()
 		if seen, ok := pkgURLs[url]; ok {
 			versionsOfSeen := differentVersionOf[oldID]
-			differentVersionOf[seen] = append(versionsOfSeen, oldID)
+			// Copying append.
+			n := len(versionsOfSeen)
+			differentVersionOf[seen] = append(versionsOfSeen[:n:n], oldID)
 		} else {
 			allSegments[oldID] = entry.buildIDSegments()
 			pkgURLs[url] = oldID
@@ -231,7 +233,9 @@ func (lf *LockFile) optimizePkgIDs() {
 					// Either the only one, or we can't do more than that.
 					differentVersions, needsVersion := differentVersionOf[oldID]
 					if needsVersion {
-						allIDs := append(differentVersions, oldID)
+						// Copying append.
+						n := len(differentVersions)
+						allIDs := append(differentVersions[:n:n], oldID)
 						for _, oldID := range allIDs {
 							lfe := lf.Packages[oldID]
 							newID := candidate + "-" + lfe.Version
