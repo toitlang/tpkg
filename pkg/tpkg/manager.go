@@ -206,7 +206,12 @@ func (m *ProjectPkgManager) identifyInstallURL(ctx context.Context, pkgName stri
 		if err != nil {
 			return nil, err
 		}
-		found = append(found, foundNames...)
+		// This is a copying append. We use re-slicing support
+		// to call append with a new slice that has a capacity
+		// of n, so that any additional elements will force
+		// re-allocation and thus avoid in-place changes.
+		n := len(found)
+		found = append(found[:n:n], foundNames...)
 	}
 
 	if len(found) == 0 {
