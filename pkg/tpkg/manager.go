@@ -206,7 +206,9 @@ func (m *ProjectPkgManager) identifyInstallURL(ctx context.Context, pkgName stri
 		if err != nil {
 			return nil, err
 		}
-		found = append(found, foundNames...)
+		// Copying append.
+		n := len(found)
+		found = append(found[:n:n], foundNames...)
 	}
 
 	if len(found) == 0 {
