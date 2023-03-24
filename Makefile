@@ -17,9 +17,9 @@ go_dependencies:
 
 GO_BUILD_FLAGS ?=
 ifeq ("$(GO_BUILD_FLAGS)", "")
-$(eval GO_BUILD_FLAGS=CGO_ENABLED=1 GODEBUG=netdns=go)
+$(eval GODEBUG=netdns=go)
 else
-$(eval GO_BUILD_FLAGS=$(GO_BUILD_FLAGS) CGO_ENABLED=1 GODEBUG=netdns=go)
+$(eval GO_BUILD_FLAGS=$(GO_BUILD_FLAGS) GODEBUG=netdns=go)
 endif
 
 .PHONY: $(BUILD_DIR)/toitpkg
