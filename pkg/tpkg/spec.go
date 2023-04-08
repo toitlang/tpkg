@@ -323,6 +323,18 @@ func (s *Spec) visitLocalDeps(ui UI, cb func(pkgPath string, fullPath string, de
 			// We ensure that all specs are relative to the 's' spec, or absolute.
 			// At this point, the pkgPath is thus also relative to 's' or absolute.
 			pkgPath = filepath.Clean(pkgPath)
+			if strings.HasPrefix(pkgPath, "..") {
+				// See if we can further simplify the pkgPath. If it starts with dots, but
+				// actually dots out and in of its own directory, we can simplify.
+				// For example, a path '../foo/bar' inside a folder 'foo' can be simplified
+				// to 'bar'.
+				s_dir := filepath.Dir(s.path)
+				relPath, err := filepath.Rel(s_dir, filepath.Join(s_dir, pkgPath))
+				if err == nil {
+					pkgPath = relPath
+				}
+			}
+
 			fullPath := pkgPath
 			if !filepath.IsAbs(fullPath) {
 				fullPath = filepath.Join(entryDir, fullPath)

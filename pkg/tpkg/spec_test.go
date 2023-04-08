@@ -324,6 +324,50 @@ func Test_VisitLocalDeps(t *testing.T) {
 		assert.Equal(t, 3, counter)
 	})
 
+	t.Run("Rel-dotdot", func(t *testing.T) {
+		ui := testUI{}
+		tsc := newTestSpecCreator(t, &ui)
+		spec := tsc.createLocal(filepath.Join("a", "b"), []SpecPackage{
+			{
+				Path: compiler.ToPath(filepath.Join("..", "..", "a", "c")),
+			},
+		})
+		tsc.createLocal(filepath.Join("a", "c"), []SpecPackage{
+			{
+				Path: compiler.ToPath(filepath.Join(tsc.dir, "abs")),
+			},
+		})
+		tsc.createLocal("abs", []SpecPackage{
+			{
+				URL:     "abs-url",
+				Version: "1.0.0",
+			},
+		})
+		counter := 0
+		err := spec.visitLocalDeps(&ui, func(pkgPath string, fullPath string, depSpec *Spec) error {
+			if counter == 0 {
+				assert.Equal(t, "", pkgPath)
+				p := filepath.Join(tsc.dir, "a", "b")
+				assert.Equal(t, p, fullPath)
+				assert.Len(t, depSpec.Deps, 1)
+			} else if counter == 1 {
+				assert.Equal(t, filepath.Join("..", "c"), pkgPath)
+				p := filepath.Join(tsc.dir, "a", "c")
+				assert.Equal(t, p, fullPath)
+				assert.Len(t, depSpec.Deps, 1)
+			} else if counter == 2 {
+				p := filepath.Join(tsc.dir, "abs")
+				assert.Equal(t, p, pkgPath)
+				assert.Equal(t, p, fullPath)
+				assert.Len(t, depSpec.Deps, 1)
+			}
+			counter++
+			return nil
+		})
+		require.NoError(t, err)
+		assert.Equal(t, 3, counter)
+	})
+
 	t.Run("Cycle", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
