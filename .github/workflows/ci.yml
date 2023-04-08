@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up constants
+        shell: bash
         id: constants
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
@@ -34,7 +35,6 @@ jobs:
             echo "UNSUPPORTED RUNNER: $RUNNER_OS"
             exit 1
           fi
-        shell: bash
 
       # Use Go 1.17
       - name: Switch to Go 1.17
@@ -43,6 +43,7 @@ jobs:
 
       # Get values for cache paths to be used in later steps
       - name: Get Go paths
+        shell: bash
         id: go-cache-paths
         run: |
           echo "go-build=$(go env GOCACHE)" >> $GITHUB_OUTPUT
