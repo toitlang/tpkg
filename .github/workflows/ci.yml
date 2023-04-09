@@ -13,28 +13,28 @@ jobs:
     runs-on: ${{ matrix.container }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up constants
+        shell: bash
         id: constants
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            echo ::set-output name=toit_archive::toit-linux.tar.gz
-            echo '::set-output name=toitvm::${{ github.workspace }}/toit/bin/toit.run'
-            echo '::set-output name=toitpkg::${{ github.workspace }}/build/toitpkg'
+            echo toit_archive=toit-linux.tar.gz >> $GITHUB_OUTPUT
+            echo 'toitvm=${{ github.workspace }}/toit/bin/toit.run' >> $GITHUB_OUTPUT
+            echo 'toitpkg=${{ github.workspace }}/build/toitpkg' >> $GITHUB_OUTPUT
           elif [ "$RUNNER_OS" == "macOS" ]; then
-            echo ::set-output name=toit_archive::toit-macos.tar.gz
-            echo '::set-output name=toitvm::${{ github.workspace }}/toit/bin/toit.run'
-            echo '::set-output name=toitpkg::${{ github.workspace }}/build/toitpkg'
+            echo toit_archive=toit-macos.tar.gz >> $GITHUB_OUTPUT
+            echo 'toitvm=${{ github.workspace }}/toit/bin/toit.run' >> $GITHUB_OUTPUT
+            echo 'toitpkg=${{ github.workspace }}/build/toitpkg' >> $GITHUB_OUTPUT
           elif [ "$RUNNER_OS" == "Windows" ]; then
-            echo ::set-output name=toit_archive::toit-windows.tar.gz
-            echo '::set-output name=toitvm::${{ github.workspace }}\toit\bin\toit.run.exe'
-            echo '::set-output name=toitpkg::${{ github.workspace }}\build\toitpkg.exe'
+            echo toit_archive=toit-windows.tar.gz >> $GITHUB_OUTPUT
+            echo 'toitvm=${{ github.workspace }}\toit\bin\toit.run.exe' >> $GITHUB_OUTPUT
+            echo 'toitpkg=${{ github.workspace }}\build\toitpkg.exe' >> $GITHUB_OUTPUT
           else
             echo "UNSUPPORTED RUNNER: $RUNNER_OS"
             exit 1
           fi
-        shell: bash
 
       # Use Go 1.20
       - name: Switch to Go 1.20
@@ -43,14 +43,15 @@ jobs:
 
       # Get values for cache paths to be used in later steps
       - name: Get Go paths
+        shell: bash
         id: go-cache-paths
         run: |
-          echo "::set-output name=go-build::$(go env GOCACHE)"
-          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+          echo "go-build=$(go env GOCACHE)" >> $GITHUB_OUTPUT
+          echo "go-mod=$(go env GOMODCACHE)" >> $GITHUB_OUTPUT
 
       # Cache go build cache, used to speedup go test
       - name: Go Build Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.go-cache-paths.outputs.go-build }}
           key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
@@ -58,7 +59,7 @@ jobs:
 
       # Cache go mod cache, used to speedup builds
       - name: Go Mod Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ steps.go-cache-paths.outputs.go-mod }}
           key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
