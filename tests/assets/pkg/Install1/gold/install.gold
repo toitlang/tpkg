@@ -28,7 +28,7 @@ Info: Package 'pkg' installed with name 'pkg'
 ===================
 // Install with a prefix.
 ===================
-pkg install --local --name=prepkg pkg2
+pkg install --local --prefix=prepkg pkg2
 Exit Code: 0
 Info: Package 'pkg2' installed with name 'prepkg'
 ===================
