@@ -1,9 +1,9 @@
-pkg describe github.com/toitware/toit-morse 1.0.0
+pkg describe github.com/toitware/toit-morse 1.0.6
 Exit Code: 0
 morse:
   description: Functions for International (ITU) Morse code.
   url: github.com/toitware/toit-morse
-  version: 1.0.0
+  version: 1.0.6
   license: MIT
-  hash: 15f15a432f7adc899eef4478a121d02995990b26
+  hash: f9f6ba3a04984db16887d7a1051ada8ad30d7db2
   

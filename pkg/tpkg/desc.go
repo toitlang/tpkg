@@ -21,7 +21,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"regexp"
 	"sort"
 	"strings"
 
@@ -241,65 +240,6 @@ func (d *Desc) IDCompare(other *Desc) int {
 	return strings.Compare(d.URL, other.URL)
 }
 
-func extractNameFromReadmeLines(lines []string, verbose func(string, ...interface{})) string {
-	if len(lines) == 0 {
-		return ""
-	}
-
-	title := lines[0]
-	if !strings.HasPrefix(title, "#") {
-		verbose("Not using README for name, as it has no title")
-		return ""
-	}
-
-	name := strings.TrimLeft(title, "#")
-	name = strings.TrimSpace(name)
-	name = strings.ReplaceAll(name, " ", "_")
-	name = strings.ReplaceAll(name, "-", "_")
-	name = strings.ToLower(name)
-	if name == "" {
-		verbose("Not using README title as name, as it is empty")
-		return ""
-	}
-	validNameRegex := regexp.MustCompile(`^\w+$`)
-	if !validNameRegex.MatchString(name) {
-		verbose("Not using README title '%s' as name, as it contains an invalid character", name)
-		return ""
-	} else if '0' <= name[0] && name[0] <= '9' {
-		verbose("Not using README title '%s' as name, as it starts with a digit", name)
-		return ""
-	}
-	return name
-}
-
-func extractDescriptionFromReadmeLines(lines []string, verbose func(string, ...interface{})) string {
-	if len(lines) == 0 {
-		return ""
-	}
-
-	index := 0
-	for ; index < len(lines); index++ {
-		line := lines[index]
-		if line != "" && !strings.HasPrefix(line, "#") {
-			break
-		}
-	}
-	descriptionLines := []string{}
-	for ; index < len(lines); index++ {
-		line := lines[index]
-		trimmed := strings.TrimSpace(line)
-		if line == "" {
-			break
-		}
-		descriptionLines = append(descriptionLines, trimmed)
-	}
-	description := strings.Join(descriptionLines, " ")
-	if description == "" {
-		verbose("Not using README for description, as it doesn't have introducing paragraph")
-	}
-	return description
-}
-
 func mapSpecDepsToDescDeps(specDeps DependencyMap) []descPackage {
 	result := []descPackage{}
 	for _, pkg := range specDeps {
@@ -381,38 +321,14 @@ func scrapeDescriptionAt(path string, allowsLocalDeps AllowLocalDepsFlag, ui UI,
 	}
 
 	if desc.Name == "" || desc.Description == "" {
-		readme := ""
-		readmePath := filepath.Join(path, "README.md")
-		if exists, _ := isFile(readmePath); exists {
-			readmeBytes, err := ioutil.ReadFile(readmePath)
-			if err != nil {
-				return nil, err
-			}
-			readme = string(readmeBytes)
-		}
-		// Just in case we get a Windows file in, replace the newlines.
-		readme = strings.ReplaceAll(readme, "\r\n", "\n")
-		lines := strings.Split(readme, "\n")
-		if desc.Name == "" {
-			name := extractNameFromReadmeLines(lines, verbose)
-			if name != "" {
-				desc.Name = name
-				verbose("Using name from README.md: '%s'", name)
-			}
-		}
-		if desc.Description == "" {
-			description := extractDescriptionFromReadmeLines(lines, verbose)
-			if description != "" {
-				desc.Description = description
-				verbose("Using description from README.md: '%s'", description)
-			}
-		}
+		ui.ReportWarning("Automatic name/description extraction from README has been removed.")
 
 		var returnError error
-		if desc.Name == "" {
+		if desc.Name == "" && desc.Description == "" {
+			returnError = ui.ReportError("Missing name and description")
+		} else if desc.Name == "" {
 			returnError = ui.ReportError("Missing name")
-		}
-		if desc.Description == "" {
+		} else if desc.Description == "" {
 			returnError = ui.ReportError("Missing description")
 		}
 		if returnError != nil {

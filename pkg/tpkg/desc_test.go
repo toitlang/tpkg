@@ -16,7 +16,6 @@
 package tpkg
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,70 +71,6 @@ func Test_CaretVersion(t *testing.T) {
 				expected, err := parseConstraint(expectedIn)
 				require.NoError(t, err)
 				assert.Equal(t, expected.String(), actual.String())
-			})
-		}
-	})
-}
-
-func Test_ExtractFromReadme(t *testing.T) {
-	t.Parallel()
-	t.Run("Extract name from Readme", func(t *testing.T) {
-		tests := [][]string{
-			{"# name", "name"},
-			{"# Name", "name"},
-			{"# name space", "name_space"},
-			{"# name-dash", "name_dash"},
-			{"# name-dash-dash2", "name_dash_dash2"},
-			{"# name space-dash", "name_space_dash"},
-			{"# bad & name", ""},
-			{"# 0bad-name", ""},
-		}
-		for _, test := range tests {
-			title := test[0]
-			t.Run(title, func(t *testing.T) {
-				expected := test[1]
-				actual := extractNameFromReadmeLines([]string{title}, func(string, ...interface{}) {})
-				assert.Equal(t, expected, actual)
-			})
-		}
-	})
-
-	t.Run("Extract description from Readme", func(t *testing.T) {
-		tests := [][]string{
-			{"with subtitle",
-				`# some title
-## some subtitle
-
-my description
-over multiple lines.`,
-				"my description over multiple lines."},
-			{"with more lines",
-				`# some title
-## some subtitle
-
-my description
-over multiple lines.
-
-And other lines following.`,
-				"my description over multiple lines."},
-			{"cramped",
-				`# some title
-my description without space.`,
-				"my description without space."},
-			{"with spaces",
-				`# some title
-## some subtitle
-
-   desc with spaces.  `,
-				"desc with spaces."},
-		}
-		for _, test := range tests {
-			testName := test[0]
-			t.Run(testName, func(t *testing.T) {
-				lines := strings.Split(test[1], "\n")
-				expected := test[2]
-				actual := extractDescriptionFromReadmeLines(lines, func(string, ...interface{}) {})
-				assert.Equal(t, expected, actual)
 			})
 		}
 	})

@@ -1,9 +1,9 @@
 pkg describe pkg_dirs/missing_name
 Exit Code: 1
+Warning: Automatic name/description extraction from README has been removed.
 Error: Missing name
 ===================
 pkg describe --verbose pkg_dirs/missing_name
 Exit Code: 1
-Info: Not using README for name, as it has no title
-Info: Using description from README.md: 'Has description but no name.'
+Warning: Automatic name/description extraction from README has been removed.
 Error: Missing name
