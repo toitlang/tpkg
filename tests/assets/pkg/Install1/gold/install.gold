@@ -45,3 +45,17 @@ Info: Package 'pkg2' installed with name 'prepkg'
 pkg install --local pkg
 Exit Code: 1
 Error: Project has already a package with name 'pkg'
+===================
+// Installing a package where the directory name is not the package name.
+===================
+pkg install --local pkg3
+Exit Code: 0
+Info: Package 'pkg3' installed with name 'pkg3_modified'
+===================
+::exec:: exec main3.toit
+::exec:: Exit Code: 0
+::exec:: hello from pkg3_modified
+::exec:: 
+::analyze:: analyze main3.toit
+::analyze:: Exit Code: 0
+::analyze:: 

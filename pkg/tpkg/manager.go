@@ -367,12 +367,33 @@ func (m *ProjectPkgManager) InstallLocalPkg(ctx context.Context, name string, pa
 		}
 		return "", m.ui.ReportError("Target '%s' is not a directory: %v", path, err)
 	}
-	if name == "" {
-		name = filepath.Base(abs)
-	}
 
-	if !isValidName(name) {
-		return "", m.ui.ReportError("Invalid name: '%s'", name)
+	if name == "" {
+		target_spec := filepath.Join(abs, "package.yaml")
+		if isFile, err := isFile(target_spec); !isFile || err != nil {
+			if err == nil {
+				if !doesPathExist(target_spec) {
+					return "", m.ui.ReportError("Missing package.yaml in '%s'", path)
+				}
+				return "", m.ui.ReportError("Package.yaml in '%s' is not a file", path)
+			}
+			return "", m.ui.ReportError("Package.yaml in '%s' is not a file: %v", path, err)
+		}
+		spec, err := ReadSpec(target_spec, m.ui)
+		if err != nil {
+			return "", m.ui.ReportError("Couldn't read spec file at '%s': %v", target_spec, err)
+		}
+		if spec.Name == "" {
+			return "", m.ui.ReportError("Missing name in spec file of package at '%s'", path)
+		}
+		name = spec.Name
+		if !isValidName(name) {
+			return "", m.ui.ReportError("Invalid name '%s' in package.yaml file at '%s'", name, path)
+		}
+	} else {
+		if !isValidName(name) {
+			return "", m.ui.ReportError("Invalid name: '%s'", name)
+		}
 	}
 
 	spec, lf, err := m.readSpecAndLock()

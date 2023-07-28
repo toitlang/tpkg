@@ -684,6 +684,9 @@ func test_toitPkg(t *tedi.T) {
 			{"exec", "main2.toit"},
 			{"// Installing again yields an error."},
 			{"pkg", "install", "--local", "pkg"},
+			{"// Installing a package where the directory name is not the package name."},
+			{"pkg", "install", "--local", "pkg3"},
+			{"exec", "main3.toit"},
 		})
 		pt.GoldToit("install_non_existing", [][]string{
 			{"pkg", "install", "--local", "non-existing"},
@@ -696,6 +699,9 @@ func test_toitPkg(t *tedi.T) {
 		})
 		pt.GoldToit("install_non_existing_git", [][]string{
 			{"pkg", "install", "some_pkg"},
+		})
+		pt.GoldToit("install_missing_yaml", [][]string{
+			{"pkg", "install", "--local", "pkg_missing_yaml"},
 		})
 	})
 
