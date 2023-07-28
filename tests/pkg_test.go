@@ -1376,6 +1376,9 @@ func test_toitPkg(t *tedi.T) {
 		pt.GoldToit("https_morse", [][]string{
 			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6"},
 		})
+		pt.GoldToit("https_morse_dot_git", [][]string{
+			{"pkg", "describe", "https://github.com/toitware/toit-morse.git", "1.0.6"},
+		})
 
 		pt.GoldToit("not_found", [][]string{
 			{"pkg", "describe", "https://toit.io/testing/not_exist", "1.0.0"},
