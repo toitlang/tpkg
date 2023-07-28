@@ -278,7 +278,7 @@ contain local packages.
   toit pkg install --local submodules/my_other_package --prefix=other
 `,
 		Run:     errorCfgRun(handler.pkgInstall),
-		Args:    cobra.MaximumNArgs(1),
+		Args:    cobra.ArbitraryArgs,
 		Aliases: []string{"download", "fetch"},
 	}
 	installCmd.Flags().Bool("local", false, "Treat package argument as local path")
@@ -582,35 +582,44 @@ func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 		h.ui.ReportError("The '--recompute' flag  can only be used without arguments")
 	}
 
-	installedPrefix := ""
-	pkgString := ""
+	reportInstalledPkg := func(pkgString string, installedPrefix string) {
+		// TODO(florian): Change the output to 'with prefix'.
+		//  Delaying this change to avoid merge conflicts with other pull requests.
+		tpkgUI.ReportInfo("Package '%s' installed with name '%s'", pkgString, installedPrefix)
 
-	if isLocal {
-		p := args[0]
-		installedPrefix, err = m.InstallLocalPkg(ctx, prefix, p)
-		pkgString = p
-		if err != nil {
-			return err
-		}
-	} else {
-		id := args[0]
-		installedPrefix, pkgString, err = m.InstallURLPkg(ctx, prefix, id)
-		if err != nil {
-			return err
-		}
+		h.track(ctx, &tracking.Event{
+			Name: "toit pkg install",
+			Properties: map[string]string{
+				"package":        pkgString,
+				"install_prefix": installedPrefix,
+			},
+		})
 	}
 
-	// TODO(florian): Change the output to 'with prefix'.
-	//  Delaying this change to avoid merge conflicts with other pull requests.
-	tpkgUI.ReportInfo("Package '%s' installed with name '%s'", pkgString, installedPrefix)
-
-	h.track(ctx, &tracking.Event{
-		Name: "toit pkg install",
-		Properties: map[string]string{
-			"package":        pkgString,
-			"install_prefix": installedPrefix,
-		},
-	})
+	if isLocal {
+		if len(args) != 1 {
+			h.ui.ReportError("Local flag requires exactly one path argument")
+			return newExitError(1)
+		}
+		p := args[0]
+		installedPrefix, err := m.InstallLocalPkg(ctx, prefix, p)
+		if err != nil {
+			return err
+		}
+		reportInstalledPkg(p, installedPrefix)
+	} else {
+		if len(args) != 1 && prefix != "" {
+			h.ui.ReportError("The prefix flag can only be used with a single package argument")
+			return newExitError(1)
+		}
+		for _, id := range args {
+			installedPrefix, pkgString, err := m.InstallURLPkg(ctx, prefix, id)
+			if err != nil {
+				return err
+			}
+			reportInstalledPkg(pkgString, installedPrefix)
+		}
+	}
 
 	return nil
 }
