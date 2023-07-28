@@ -69,7 +69,7 @@ func newTestSpecCreator(t *testing.T, ui UI) testSpecCreator {
 	}
 }
 
-func (tsc testSpecCreator) create(fullDirPath string, deps []SpecPackage) Spec {
+func (tsc testSpecCreator) create(name string, fullDirPath string, deps []SpecPackage) Spec {
 	err := os.MkdirAll(fullDirPath, 0755)
 	require.NoError(tsc.t, err)
 	specPath := filepath.Join(fullDirPath, DefaultSpecName)
@@ -80,22 +80,24 @@ func (tsc testSpecCreator) create(fullDirPath string, deps []SpecPackage) Spec {
 		prefixCounter++
 	}
 	spec := Spec{
-		path: specPath,
-		Deps: depMap,
+		Name:        name,
+		Description: "some description",
+		path:        specPath,
+		Deps:        depMap,
 	}
 	err = spec.WriteToFile()
 	require.NoError(tsc.t, err)
 	return spec
 }
 
-func (tsc testSpecCreator) createLocal(dir string, deps []SpecPackage) Spec {
+func (tsc testSpecCreator) createLocal(name string, dir string, deps []SpecPackage) Spec {
 	fullDir := filepath.Join(tsc.dir, dir)
-	return tsc.create(fullDir, deps)
+	return tsc.create(name, fullDir, deps)
 }
 
-func (tsc testSpecCreator) createUri(uri string, version string, deps []SpecPackage) Spec {
+func (tsc testSpecCreator) createUri(name string, uri string, version string, deps []SpecPackage) Spec {
 	fullDir := tsc.c.PreferredPkgPath(tsc.dir, uri, version)
-	return tsc.create(fullDir, deps)
+	return tsc.create(name, fullDir, deps)
 }
 
 func Test_Parse(t *testing.T) {
@@ -194,12 +196,12 @@ func Test_BuildSolverDeps(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "sub",
 			},
 		})
-		tsc.createLocal("sub", []SpecPackage{
+		tsc.createLocal("sub", "sub", []SpecPackage{
 			{
 				URL:     "simple-url",
 				Version: "1.0.0",
@@ -214,12 +216,12 @@ func Test_BuildSolverDeps(t *testing.T) {
 	t.Run("Cycle", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "pkg1",
 			},
 		})
-		tsc.createLocal("pkg1", []SpecPackage{
+		tsc.createLocal("pkg1", "pkg1", []SpecPackage{
 			{
 				URL:     "cycle-url1",
 				Version: "1.0.0",
@@ -228,7 +230,7 @@ func Test_BuildSolverDeps(t *testing.T) {
 				Path: "../pkg2",
 			},
 		})
-		tsc.createLocal("pkg2", []SpecPackage{
+		tsc.createLocal("pkg2", "pkg2", []SpecPackage{
 			{
 				URL:     "cycle-url2",
 				Version: "1.0.0",
@@ -250,12 +252,12 @@ func Test_VisitLocalDeps(t *testing.T) {
 	t.Run("Simple", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "sub",
 			},
 		})
-		tsc.createLocal("sub", []SpecPackage{
+		tsc.createLocal("sub", "sub", []SpecPackage{
 			{
 				URL:     "simple-url",
 				Version: "1.0.0",
@@ -283,17 +285,17 @@ func Test_VisitLocalDeps(t *testing.T) {
 	t.Run("Abs-dotdot", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("entry", []SpecPackage{
+		spec := tsc.createLocal("", "entry", []SpecPackage{
 			{
 				Path: compiler.ToPath(filepath.Join("..", "dotdot")),
 			},
 		})
-		tsc.createLocal("dotdot", []SpecPackage{
+		tsc.createLocal("dotdot", "dotdot", []SpecPackage{
 			{
 				Path: compiler.ToPath(filepath.Join(tsc.dir, "abs")),
 			},
 		})
-		tsc.createLocal("abs", []SpecPackage{
+		tsc.createLocal("abs", "abs", []SpecPackage{
 			{
 				URL:     "abs-url",
 				Version: "1.0.0",
@@ -327,17 +329,17 @@ func Test_VisitLocalDeps(t *testing.T) {
 	t.Run("Rel-dotdot", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal(filepath.Join("a", "b"), []SpecPackage{
+		spec := tsc.createLocal("ab", filepath.Join("a", "b"), []SpecPackage{
 			{
 				Path: compiler.ToPath(filepath.Join("..", "..", "a", "c")),
 			},
 		})
-		tsc.createLocal(filepath.Join("a", "c"), []SpecPackage{
+		tsc.createLocal("ac", filepath.Join("a", "c"), []SpecPackage{
 			{
 				Path: compiler.ToPath(filepath.Join(tsc.dir, "abs")),
 			},
 		})
-		tsc.createLocal("abs", []SpecPackage{
+		tsc.createLocal("abs", "abs", []SpecPackage{
 			{
 				URL:     "abs-url",
 				Version: "1.0.0",
@@ -371,12 +373,12 @@ func Test_VisitLocalDeps(t *testing.T) {
 	t.Run("Cycle", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "pkg1",
 			},
 		})
-		tsc.createLocal("pkg1", []SpecPackage{
+		tsc.createLocal("pkg1", "pkg1", []SpecPackage{
 			{
 				URL:     "cycle-url1",
 				Version: "1.0.0",
@@ -385,7 +387,7 @@ func Test_VisitLocalDeps(t *testing.T) {
 				Path: "../pkg2",
 			},
 		})
-		tsc.createLocal("pkg2", []SpecPackage{
+		tsc.createLocal("pkg2", "pkg2", []SpecPackage{
 			{
 				URL:     "cycle-url2",
 				Version: "1.0.0",
@@ -419,27 +421,27 @@ func Test_VisitLocalDeps(t *testing.T) {
 	t.Run("Long chain", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "pkg1",
 			},
 		})
-		tsc.createLocal("pkg1", []SpecPackage{
+		tsc.createLocal("pkg1", "pkg1", []SpecPackage{
 			{
 				Path: "../pkg2",
 			},
 		})
-		tsc.createLocal("pkg2", []SpecPackage{
+		tsc.createLocal("pkg2", "pkg2", []SpecPackage{
 			{
 				Path: "../pkg3",
 			},
 		})
-		tsc.createLocal("pkg3", []SpecPackage{
+		tsc.createLocal("pkg3", "pkg3", []SpecPackage{
 			{
 				Path: "../pkg4",
 			},
 		})
-		tsc.createLocal("pkg4", []SpecPackage{
+		tsc.createLocal("pkg4", "pkg4", []SpecPackage{
 			{
 				URL:     "url4",
 				Version: "1.0.0",
@@ -483,7 +485,7 @@ func Test_SpecToLock(t *testing.T) {
 	t.Run("Local", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				Path: "local_path",
 			},
@@ -514,7 +516,7 @@ func Test_SpecToLock(t *testing.T) {
 	t.Run("Constraints", func(t *testing.T) {
 		ui := testUI{}
 		tsc := newTestSpecCreator(t, &ui)
-		spec := tsc.createLocal("", []SpecPackage{
+		spec := tsc.createLocal("", "", []SpecPackage{
 			{
 				URL:     "simple-url",
 				Version: "1.0.0",
@@ -528,14 +530,14 @@ func Test_SpecToLock(t *testing.T) {
 				Version: ">=2.0.0,<3.0.0",
 			},
 		})
-		tsc.createUri("simple-url", "1.0.0", []SpecPackage{
+		tsc.createUri("simple_url", "simple-url", "1.0.0", []SpecPackage{
 			{
 				URL:     "simple-url2",
 				Version: ">=2.1.0,<2.5.0",
 			},
 		})
-		tsc.createUri("simple-url2", "1.2.5", []SpecPackage{})
-		tsc.createUri("simple-url2", "2.3.4", []SpecPackage{})
+		tsc.createUri("simple_url2", "simple-url2", "1.2.5", []SpecPackage{})
+		tsc.createUri("simple_url2", "simple-url2", "2.3.4", []SpecPackage{})
 		solution := &Solution{
 			pkgs: map[string][]StringVersion{
 				"simple-url":  makeStringVersions(t, "1.0.0"),

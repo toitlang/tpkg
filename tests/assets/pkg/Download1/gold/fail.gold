@@ -3,7 +3,7 @@
 ::exec:: <TEST>/package.lock:8:10: error: Package '<GIT_URL>/bar_git-2.0.1' not found
 ::exec::     url: <GIT_URL>/bar_git
 ::exec::          ^~
-::exec:: <TEST>/package.lock:14:10: error: Package '<GIT_URL>/foo_git-1.2.3' not found
+::exec:: <TEST>/package.lock:15:10: error: Package '<GIT_URL>/foo_git-1.2.3' not found
 ::exec::     url: <GIT_URL>/foo_git
 ::exec::          ^~
 ::exec:: main.toit:1:8: error: Package 'foo_git' for prefix 'foo' not found
@@ -27,5 +27,5 @@
 ::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say_hello'
 ::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say_hello'
 ::analyze:: <TEST>/package.lock:8:10 error: Package '<GIT_URL>/bar_git-2.0.1' not found
-::analyze:: <TEST>/package.lock:14:10 error: Package '<GIT_URL>/foo_git-1.2.3' not found
+::analyze:: <TEST>/package.lock:15:10 error: Package '<GIT_URL>/foo_git-1.2.3' not found
 ::analyze:: 

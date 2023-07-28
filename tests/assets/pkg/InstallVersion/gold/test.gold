@@ -36,9 +36,11 @@ prefixes:
 packages:
   many-1.0.1:
     url: <GIT_URL>/pkgs_many_versions/many
+    name: many
     version: 1.0.1
   many-3.0.2:
     url: <GIT_URL>/pkgs_many_versions/many
+    name: many
     version: 3.0.2
 
 ===================
@@ -66,9 +68,11 @@ prefixes:
 packages:
   many-1.1.0:
     url: <GIT_URL>/pkgs_many_versions/many
+    name: many
     version: 1.1.0
   many-3.0.2:
     url: <GIT_URL>/pkgs_many_versions/many
+    name: many
     version: 3.0.2
 
 ===================
