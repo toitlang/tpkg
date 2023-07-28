@@ -11,7 +11,7 @@ Exit Code: 0
 ===================
 pkg install github.com/toitware/toit-morse
 Exit Code: 0
-Info: Package 'github.com/toitware/toit-morse@1.0.2' installed with name 'morse'
+Info: Package 'github.com/toitware/toit-morse@1.0.6' installed with name 'morse'
 ===================
 pkg registry add toit github.com/toitware/registry
 Exit Code: 0
