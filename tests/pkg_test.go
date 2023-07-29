@@ -614,10 +614,13 @@ func (pt PkgTest) GoldToit(name string, commands [][]string) {
 	pt.checkGold(name, combined)
 }
 
+func computeRegCachePath(pt PkgTest, regPath string) string {
+	escapedRegistry := compiler.FilePathToURIPath(regPath).FilePath()
+	return filepath.Join(pt.registryCacheDir, escapedRegistry)
+}
 func deleteRegCache(t *tedi.T, pt PkgTest, regPath string) {
 	// Delete the registry cache.
-	escapedRegistry := compiler.FilePathToURIPath(regPath).FilePath()
-	registryPath := filepath.Join(pt.registryCacheDir, escapedRegistry)
+	registryPath := computeRegCachePath(pt, regPath)
 	assert.DirExists(t, registryPath)
 	err := os.RemoveAll(registryPath)
 	assert.NoError(t, err)
@@ -1132,6 +1135,51 @@ func test_toitPkg(t *tedi.T) {
 				{"pkg", "list"},
 				{"pkg", "registry", "sync"},
 			})
+		}
+	})
+
+	t.Run("GitRegistryClearCache", func(t *tedi.T, pt PkgTest) {
+		regPath := filepath.Join(pt.dir, "registry_git_pkgs")
+
+		pt.GoldToit("test-preamble", [][]string{
+			{"pkg", "registry", "add", "test-reg", regPath},
+		})
+
+		regCachePath := computeRegCachePath(pt, regPath)
+
+		// Try three times. First without clear-cache.
+		// Then once using the sync alias and once using the full command.
+		for i := 0; i < 3; i++ {
+			// Touch a file in the cache path, so we can see that the clear-cache
+			// actually removes it.
+			cacheFile := filepath.Join(regCachePath, "foo")
+			err := ioutil.WriteFile(cacheFile, []byte("foo"), 0644)
+			require.NoError(t, err)
+
+			if i == 0 {
+				pt.GoldToit("no-clear", [][]string{
+					{"pkg", "registry", "sync"},
+					{"pkg", "list"},
+				})
+			} else if i == 1 {
+				pt.GoldToit("full-command", [][]string{
+					{"pkg", "registry", "sync", "--clear-cache"},
+					{"pkg", "list"},
+				})
+			} else {
+				pt.GoldToit("sync-alias", [][]string{
+					{"pkg", "sync", "--clear-cache"},
+					{"pkg", "list"},
+				})
+			}
+
+			// Check that the 'foo' file is gone, unless we didn't use the --clear-cache flag.
+			_, err = os.Stat(cacheFile)
+			if i == 0 {
+				assert.NoError(t, err)
+			} else {
+				assert.True(t, os.IsNotExist(err))
+			}
 		}
 	})
 
