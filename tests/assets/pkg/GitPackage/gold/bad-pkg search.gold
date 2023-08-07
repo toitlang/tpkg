@@ -3,6 +3,6 @@
 pkg registry add --local test-reg2 registry2
 Exit Code: 0
 ===================
-pkg install --name=pre3 foo
+pkg install --prefix=pre3 foo
 Exit Code: 1
 Error: More than one matching package 'foo' found
