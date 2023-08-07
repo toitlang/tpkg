@@ -1,8 +1,7 @@
 pkg describe pkg_dirs/bad_name2
 Exit Code: 1
-Error: Missing name
+Error: Invalid name: '0bad-name'
 ===================
 pkg describe --verbose pkg_dirs/bad_name2
 Exit Code: 1
-Info: Not using README title '0bad_name' as name, as it starts with a digit
-Error: Missing name
+Error: Invalid name: '0bad-name'

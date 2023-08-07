@@ -1365,10 +1365,10 @@ func test_toitPkg(t *tedi.T) {
 
 	t.Run("ScrapeGit", func(t *tedi.T, pt PkgTest) {
 		pt.GoldToit("morse", [][]string{
-			{"pkg", "describe", "github.com/toitware/toit-morse", "1.0.0"},
+			{"pkg", "describe", "github.com/toitware/toit-morse", "1.0.6"},
 		})
 		pt.GoldToit("https_morse", [][]string{
-			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.0"},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6"},
 		})
 
 		pt.GoldToit("not_found", [][]string{
@@ -1392,9 +1392,9 @@ func test_toitPkg(t *tedi.T) {
 		pt.GoldToit("write", [][]string{
 			{"pkg", "describe", ".", "--out-dir=foo"},
 			{"pkg", "describe", "--out-dir=foo"},
-			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.0", "--out-dir=" + outDir},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6", "--out-dir=" + outDir},
 		})
-		descPath := filepath.Join(pt.dir, "out", "packages", "github.com", "toitware", "toit-morse", "1.0.0", "desc.yaml")
+		descPath := filepath.Join(pt.dir, "out", "packages", "github.com", "toitware", "toit-morse", "1.0.6", "desc.yaml")
 		assert.FileExists(t, descPath)
 		_, err := ioutil.ReadFile(descPath)
 		assert.NoError(t, err)
@@ -1500,7 +1500,7 @@ func test_toitPkg(t *tedi.T) {
 			{"pkg", "install", "--recompute"},
 			{"pkg", "search", "pkg"},
 			{"pkg", "registry", "remove", "test-reg"},
-			{"pkg", "describe", "github.com/toitware/toit-morse", "v1.0.0"},
+			{"pkg", "describe", "github.com/toitware/toit-morse", "v1.0.6"},
 		})
 	})
 

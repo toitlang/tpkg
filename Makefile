@@ -2,6 +2,11 @@ BUILD_DIR := build
 
 GO_PACKAGE := github.com/toitlang/tpkg
 
+TOITC_PATH ?= toit.compile
+TOITLSP_PATH ?= toit.lsp
+TOITVM_PATH ?= toit.run
+TOITPKG_PATH ?= $(CURDIR)/$(BUILD_DIR)/toitpkg
+
 all: toitpkg
 .PHONY: all
 
@@ -33,7 +38,12 @@ toitpkg: $(BUILD_DIR)/toitpkg
 TEST_FLAGS ?=
 .PHONY: test
 test: toitpkg $(GO_MOCKS)
-	tedi test -v -cover $(TEST_FLAGS) ./...
+	cmake -E env \
+	    TOITC_PATH=$(TOITC_PATH) \
+	    TOITLSP_PATH=$(TOITLSP_PATH) \
+	    TOITVM_PATH=$(TOITVM_PATH)  \
+	    TOITPKG_PATH=$(TOITPKG_PATH) \
+	    tedi test -v -cover $(TEST_FLAGS) ./...
 
 .PHONY: update-gold
 update-gold: export UPDATE_PKG_GOLD = true

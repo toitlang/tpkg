@@ -85,6 +85,9 @@ func (s *Spec) ParseString(str string, ui UI) error {
 }
 
 func (s *Spec) Validate(ui UI) error {
+	if s.Name != "" && !isValidName(s.Name) {
+		return ui.ReportError("Invalid name: '%s'", s.Name)
+	}
 	for prefix, dep := range s.Deps {
 		if err := validatePrefix(prefix, ui); err != nil {
 			return err
