@@ -39,6 +39,8 @@ type Registry interface {
 	// Synchronization installs the registry first if necessary. It then
 	// downloads the latest packages.
 	Load(ctx context.Context, sync bool, cache Cache, ui UI) error
+	// Clears the cache, if there is any.
+	ClearCache(ctx context.Context, cache Cache, ui UI) error
 	// Describes this registry. Used when showing where a specification comes from.
 	Describe() string
 	// All the loaded entries. If the registry hasn't been loaded yet returns nil.
@@ -95,7 +97,7 @@ func (k RegistryKind) IsValid() bool {
 }
 
 // Load loads the registry given by its configuration.
-func (cfg RegistryConfig) Load(ctx context.Context, sync bool, cache Cache, ui UI) (Registry, error) {
+func (cfg RegistryConfig) Load(ctx context.Context, sync bool, clearCache bool, cache Cache, ui UI) (Registry, error) {
 	if !cfg.Kind.IsValid() {
 		err := ui.ReportError("Unexpected registry config %v", cfg.Kind)
 		return nil, err
@@ -110,6 +112,11 @@ func (cfg RegistryConfig) Load(ctx context.Context, sync bool, cache Cache, ui U
 			return nil, err
 		}
 	}
+	if clearCache {
+		if err := registry.ClearCache(ctx, cache, ui); err != nil {
+			return nil, err
+		}
+	}
 	if err := registry.Load(ctx, sync, cache, ui); err != nil {
 		return nil, err
 	}
@@ -121,7 +128,8 @@ func (cfg RegistryConfig) Load(ctx context.Context, sync bool, cache Cache, ui U
 func (configs RegistryConfigs) Load(ctx context.Context, sync bool, cache Cache, ui UI) (Registries, error) {
 	result := []Registry{}
 	for _, config := range configs {
-		registry, err := config.Load(ctx, sync, cache, ui)
+		clearCache := false
+		registry, err := config.Load(ctx, sync, clearCache, cache, ui)
 		if err != nil {
 			return nil, err
 		}
@@ -216,6 +224,10 @@ func (p *pathRegistry) Load(_ context.Context, sync bool, _ Cache, ui UI) error 
 		return err
 	}
 	p.entries = entries
+	return nil
+}
+
+func (p *pathRegistry) ClearCache(ctx context.Context, cache Cache, ui UI) error {
 	return nil
 }
 
@@ -337,97 +349,105 @@ func (gr *gitRegistry) Describe() string {
 	return fmt.Sprintf("%s: %s", gr.name, gr.url)
 }
 
+func (gr *gitRegistry) withFileLock(ctx context.Context, cache Cache, f func(path string) error) error {
+	p := gr.path
+	if gr.path == "" {
+		p = cache.PreferredRegistryPath(gr.url)
+	}
+
+	// Make sure only one pkg-manager is loading the registry at the same time.
+	// Use a lock file in the directory above the registry's checkout path.
+	// This way we don't interfere with cloning/pulling, but still have relatively
+	// good granularity, allowing to sync multiple registries at the same time.
+	lockP := filepath.Join(filepath.Dir(p), ".tpgk_sync.lock")
+	err := os.MkdirAll(filepath.Dir(lockP), 0755)
+	if err != nil {
+		return err
+	}
+	m, err := filemutex.New(lockP)
+	if err != nil {
+		return err
+	}
+
+	unlocked := make(chan struct{})
+	ctx, cancel := context.WithTimeout(ctx, time.Minute*3)
+	defer cancel()
+
+	// The following has a race condition:
+	// We could get the lock, then enter the `default` select, but before
+	// closing the channel, the ctx is done and the second select becomes
+	// non-deterministic.
+	// In that case we don't even unlock anymore.
+	// It's a bad case, but better than not giving any error-message.
+	go func() {
+		m.Lock()
+		select {
+		case <-ctx.Done():
+			m.Unlock()
+		default:
+			close(unlocked)
+		}
+	}()
+	select {
+	case <-unlocked:
+		defer m.Unlock()
+	case <-ctx.Done():
+		return fmt.Errorf("unable to acquire sync lock %s", lockP)
+	}
+
+	return f(p)
+}
+
 func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) error {
 	if sync {
-		p := gr.path
-		if gr.path == "" {
-			p = cache.PreferredRegistryPath(gr.url)
-		}
+		err := gr.withFileLock(ctx, cache, func(p string) error {
+			info, err := os.Stat(p)
+			exists := true
+			if os.IsNotExist(err) {
+				exists = false
+			} else if err != nil {
+				return err
+			} else if !info.IsDir() {
+				return ui.ReportError("Path %p exists but is not a directory", p)
+			}
 
-		// Make sure only one pkg-manager is loading the registry at the same time.
-		// Use a lock file in the directory above the registry's checkout path.
-		// This way we don't interfere with cloning/pulling, but still have relatively
-		// good granularity, allowing to sync multiple registries at the same time.
-		lockP := filepath.Join(filepath.Dir(p), ".tpgk_sync.lock")
-		err := os.MkdirAll(filepath.Dir(lockP), 0755)
+			if exists {
+				err := git.Pull(p, git.PullOptions{})
+				if err != nil {
+					return err
+				}
+			} else {
+				url := gr.url
+
+				var err error
+				// The go-git library doesn't support cloning repositories that use 'main' as
+				// default branch: https://github.com/go-git/go-git/issues/363
+				// We therefore try different ones.
+				// It's advantageous to try the correct one first.
+				for _, branch := range []string{"main", "master", "trunk"} {
+					_, branchErr := git.Clone(ctx, p, git.CloneOptions{
+						URL:          url,
+						SingleBranch: true,
+						Branch:       branch,
+					})
+					if branchErr == nil {
+						err = nil
+						break
+					}
+					if err == nil || !strings.Contains(branchErr.Error(), "couldn't find remote ref") {
+						err = branchErr
+					}
+
+				}
+				if err != nil {
+					return err
+				}
+				gr.path = p
+			}
+			return nil
+		})
 		if err != nil {
 			return err
-		}
-		m, err := filemutex.New(lockP)
-		if err != nil {
-			return err
-		}
-
-		unlocked := make(chan struct{})
-		ctx, cancel := context.WithTimeout(ctx, time.Minute*3)
-		defer cancel()
-
-		// The following has a race condition:
-		// We could get the lock, then enter the `default` select, but before
-		// closing the channel, the ctx is done and the second select becomes
-		// non-deterministic.
-		// In that case we don't even unlock anymore.
-		// It's a bad case, but better than not giving any error-message.
-		go func() {
-			m.Lock()
-			select {
-			case <-ctx.Done():
-				m.Unlock()
-			default:
-				close(unlocked)
-			}
-		}()
-		select {
-		case <-unlocked:
-			defer m.Unlock()
-		case <-ctx.Done():
-			return fmt.Errorf("unable to acquire sync lock %s", lockP)
-		}
-
-		// Check again whether the directory exists now.
-		// Another command could have downloaded it in the meantime.
-		info, err := os.Stat(p)
-		exists := true
-		if os.IsNotExist(err) {
-			exists = false
-		} else if err != nil {
-			return err
-		} else if !info.IsDir() {
-			return ui.ReportError("Path %p exists but is not a directory", p)
-		}
-
-		if exists {
-			err := git.Pull(p, git.PullOptions{})
-			if err != nil {
-				return err
-			}
-		} else {
-			url := gr.url
-
-			var err error
-			// The go-git library doesn't support cloning repositories that use 'main' as
-			// default branch: https://github.com/go-git/go-git/issues/363
-			// We therefore try different ones.
-			// It's advantageous to try the correct one first.
-			for _, branch := range []string{"main", "master", "trunk"} {
-				_, branchErr := git.Clone(ctx, p, git.CloneOptions{
-					URL:          url,
-					SingleBranch: true,
-					Branch:       branch,
-				})
-				if branchErr == nil {
-					err = nil
-					break
-				}
-				if err == nil || !strings.Contains(branchErr.Error(), "couldn't find remote ref") {
-					err = branchErr
-				}
-
-			}
-			if err != nil {
-				return err
-			}
-			gr.path = p
 		}
 	}
 	if gr.path == "" {
@@ -437,6 +457,16 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 		return nil
 	}
 	return gr.pathRegistry.Load(ctx, sync, cache, ui)
+}
+
+func (gr *gitRegistry) ClearCache(ctx context.Context, cache Cache, ui UI) error {
+	if gr.path == "" {
+		return nil
+	}
+	// Remove the directory at gr.path.
+	return gr.withFileLock(ctx, cache, func(p string) error {
+		return os.RemoveAll(p)
+	})
 }
 
 func (registries Registries) searchInRegistries(searchFun func(Registry) ([]*Desc, error)) (DescRegistries, error) {

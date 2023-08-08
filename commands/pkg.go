@@ -418,6 +418,7 @@ only that registry is synchronized.`,
 		Run:  errorCfgRun(handler.pkgRegistrySync),
 		Args: cobra.ArbitraryArgs,
 	}
+	syncRegistryCmd.Flags().BoolP("clear-cache", "", false, "Clear the registry cache before synchronizing")
 	registryCmd.AddCommand(syncRegistryCmd)
 
 	listRegistriesCmd := &cobra.Command{
@@ -429,7 +430,7 @@ only that registry is synchronized.`,
 
 	registryCmd.AddCommand(listRegistriesCmd)
 
-	cmd.AddCommand(&cobra.Command{
+	syncToplevelCmd := &cobra.Command{
 		Use:   "sync",
 		Short: "Synchronizes all registries",
 		Long: `Synchronizes all registries.
@@ -437,7 +438,9 @@ only that registry is synchronized.`,
 This is an alias for 'pkg registry sync'`,
 		Run:  errorCfgRun(handler.pkgRegistrySync),
 		Args: cobra.NoArgs,
-	})
+	}
+	syncToplevelCmd.Flags().BoolP("clear-cache", "", false, "Clear the registry cache before synchronizing")
+	cmd.AddCommand(syncToplevelCmd)
 
 	describeCmd := &cobra.Command{
 		Use:   "describe [<path_or_url>] [<version>]",
@@ -848,7 +851,8 @@ func (h *pkgHandler) pkgRegistryAdd(cmd *cobra.Command, args []string) error {
 	})
 
 	sync := true
-	_, err = registryConfig.Load(ctx, sync, cache, h.ui)
+	clearCache := false
+	_, err = registryConfig.Load(ctx, sync, clearCache, cache, h.ui)
 
 	if err != nil {
 		if !tpkg.IsErrAlreadyReported(err) {
@@ -891,6 +895,10 @@ func (h *pkgHandler) pkgRegistryRemove(cmd *cobra.Command, args []string) error 
 
 func (h *pkgHandler) pkgRegistrySync(cmd *cobra.Command, args []string) error {
 	ctx := cmd.Context()
+	clearCache, err := cmd.Flags().GetBool("clear-cache")
+	if err != nil {
+		return err
+	}
 	cache, err := h.buildCache()
 	if err != nil {
 		return err
@@ -921,7 +929,7 @@ func (h *pkgHandler) pkgRegistrySync(cmd *cobra.Command, args []string) error {
 	for _, config := range configsToSync {
 		sync := true
 		h.ui.ReportInfo("Syncing '%s'", config.Name)
-		_, err := config.Load(ctx, sync, cache, h.ui)
+		_, err := config.Load(ctx, sync, clearCache, cache, h.ui)
 		if err != nil {
 			if !tpkg.IsErrAlreadyReported(err) {
 				h.ui.ReportError("Error while syncing '%s': '%v'", config.Name, err)
