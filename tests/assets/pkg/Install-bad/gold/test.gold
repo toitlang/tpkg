@@ -5,9 +5,9 @@ Exit Code: 0
 ===================
 // Prefix must be used with package name.
 ===================
-pkg install --name=foo
+pkg install --prefix=foo
 Exit Code: 1
-Error: Name flag can only be used with a package argument
+Error: The prefix flag can only be used with a package argument
 ===================
 // Path must be used with path.
 ===================
@@ -17,6 +17,6 @@ Error: Local flag requires path argument
 ===================
 // Prefix must be valid.
 ===================
-pkg install --name invalid prefix pkg2
+pkg install --prefix invalid prefix pkg2
 Exit Code: 1
 Error: Invalid name: 'invalid prefix'

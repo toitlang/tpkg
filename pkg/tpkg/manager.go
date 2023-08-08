@@ -375,9 +375,9 @@ func (m *ProjectPkgManager) InstallLocalPkg(ctx context.Context, name string, pa
 				if !doesPathExist(target_spec) {
 					return "", m.ui.ReportError("Missing package.yaml in '%s'", path)
 				}
-				return "", m.ui.ReportError("Package.yaml in '%s' is not a file", path)
+				return "", m.ui.ReportError("The package.yaml in '%s' is not a file", path)
 			}
-			return "", m.ui.ReportError("Package.yaml in '%s' is not a file: %v", path, err)
+			return "", m.ui.ReportError("The package.yaml in '%s' is not a file: %v", path, err)
 		}
 		spec, err := ReadSpec(target_spec, m.ui)
 		if err != nil {

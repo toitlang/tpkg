@@ -41,9 +41,9 @@ test: toitpkg $(GO_MOCKS)
 	cmake -E env \
 	    TOITC_PATH=$(TOITC_PATH) \
 	    TOITLSP_PATH=$(TOITLSP_PATH) \
-			TOITVM_PATH=$(TOITVM_PATH)  \
-			TOITPKG_PATH=$(TOITPKG_PATH) \
-			tedi test -v -cover $(TEST_FLAGS) ./...
+	    TOITVM_PATH=$(TOITVM_PATH)  \
+	    TOITPKG_PATH=$(TOITPKG_PATH) \
+	    tedi test -v -cover $(TEST_FLAGS) ./...
 
 .PHONY: update-gold
 update-gold: export UPDATE_PKG_GOLD = true
