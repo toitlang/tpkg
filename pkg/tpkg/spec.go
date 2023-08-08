@@ -428,14 +428,14 @@ func validatePrefix(prefix string, ui UI) error {
 
 func (sp *SpecPackage) Validate(prefix string, ui UI) error {
 	if sp.URL == "" && sp.Path == "" {
-		return ui.ReportError("Package specification for prefix '%s' is missing 'url' or 'path'", prefix)
+		return ui.ReportError("Package entry for prefix '%s' is missing 'url' or 'path'", prefix)
 	}
 	if sp.URL == "" && sp.Version != "" {
-		ui.ReportWarning("Prefix '%s' has version constraint but no URL", prefix)
+		ui.ReportWarning("Package entry for prefix '%s' has version constraint but no URL", prefix)
 	}
 	if sp.Version != "" {
 		if _, err := parseConstraint(sp.Version); err != nil {
-			return ui.ReportError("Prefix '%s' has invalid version constraint: '%s'", prefix, sp.Version)
+			return ui.ReportError("Package entry for prefix '%s' has invalid version constraint: '%s'", prefix, sp.Version)
 		}
 	}
 	return nil
