@@ -39,7 +39,7 @@ Exit Code: 0
 ===================
 // Install pkg4 for 'main.toit', creating/updating a lock file.
 ===================
-pkg install pkg4 --name=pkg4_pre
+pkg install pkg4 --prefix=pkg4_pre
 Exit Code: 0
 Info: Package '<GIT_URL>/git_pkgs/pkg4@4.9.9' installed with name 'pkg4_pre'
 ===================

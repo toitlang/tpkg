@@ -19,7 +19,7 @@ Properties:
 Info: Package '<GIT_URL>/git_pkgs/pkg3@3.1.2' installed with name 'pkg3'
 Name: toit pkg install
 Properties:
-  install_name: pkg3
+  install_prefix: pkg3
   package: <GIT_URL>/git_pkgs/pkg3@3.1.2
 ===================
 pkg install
