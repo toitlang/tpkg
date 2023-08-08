@@ -48,13 +48,16 @@ func Test_OptimizePkgIDs(t *testing.T) {
 			},
 			"pkg2": {
 				URL:     compiler.ToURIPath(project2URL),
+				Name:    "project2",
 				Version: project2Version,
 			},
 			"pkg3": {
 				URL:     compiler.ToURIPath(project3URL),
+				Name:    "project3",
 				Version: project3Version,
 			},
 			"other": {
+				Name: "other",
 				Path: compiler.ToPath(otherPath),
 			},
 		}

@@ -52,6 +52,7 @@ type LockFile struct {
 // a non-local package and is found in the package cache.
 type PackageEntry struct {
 	URL      compiler.URIPath `yaml:"url,omitempty"`
+	Name     string           `yaml:"name,omitempty"`
 	Version  string           `yaml:"version,omitempty"`
 	Path     compiler.Path    `yaml:"path,omitempty"`
 	Hash     string           `yaml:"hash,omitempty"`

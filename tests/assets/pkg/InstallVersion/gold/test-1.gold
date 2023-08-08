@@ -9,6 +9,7 @@ prefixes:
 packages:
   many:
     url: <GIT_URL>/pkgs_many_versions/many
+    name: many
     version: 1.1.0
 
 ===================

@@ -20,16 +20,19 @@ prefixes:
 packages:
   pkg1:
     url: <GIT_URL>/git_pkgs/pkg1
+    name: pkg1
     version: 1.0.0
     prefixes:
       pkg2: pkg2
   pkg2:
     url: <GIT_URL>/git_pkgs/pkg2
+    name: pkg2
     version: 2.4.2
     prefixes:
       pre: pkg3
   pkg3:
     url: <GIT_URL>/git_pkgs/pkg3
+    name: pkg3
     version: 3.1.2
 
 ===================

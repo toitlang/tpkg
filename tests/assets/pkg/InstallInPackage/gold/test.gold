@@ -21,15 +21,18 @@ prefixes:
 packages:
   bar_git:
     url: <GIT_URL>/bar_git
+    name: bar
     version: 2.0.1
     prefixes:
       foo: foo_git
       sub: sub_git
   foo_git:
     url: <GIT_URL>/foo_git
+    name: foo
     version: 1.2.3
   sub_git:
     url: <GIT_URL>/sub_git
+    name: sub
     version: 3.1.4
 
 ===================
