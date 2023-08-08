@@ -237,9 +237,8 @@ the package foo with the highest version satisfying '2.0.0 <= version < 3.0.0'.
 Note: the version constraint in the package.yaml is set to accept semver compatible
 versions. If necessary, modify the constraint in that file.
 
-Installed packages are identified by their name. If the '--name' argument is
-provided, that one is used instead. Packages can then be used by
-  'import <name>.<lib>'.
+Installed packages can be imported by their prefix. By default the prefix is their
+name, but the '--prefix' argument can override the default.
 
 If the '--local' flag is used, then the 'package' argument is interpreted as
 a local path to a package directory. Note that published packages may not
@@ -256,9 +255,9 @@ contain local packages.
   #   which can be shortened to 'import morse'.
   toit pkg install morse
 
-  # Install the package 'morse' with an alternative name.
+  # Install the package 'morse' with an alternative prefix.
   # Programs would use this package with 'import alt_morse.morse'.
-  toit pkg install morse --name=alt_morse
+  toit pkg install morse --prefix=alt_morse
 
   # Install the version 1.0.0 of the package 'morse'.
   toit pkg install morse@1.0.0
@@ -269,13 +268,14 @@ contain local packages.
   toit pkg install toitware/toit-morse
   toit pkg install github.com/toitware/toit-morse
 
-  # Install the package 'morse' by URL with a given name.
+  # Install the package 'morse' by URL with a given prefix.
   # Programs would use this package with 'import alt_morse.morse'.
-  toit pkg install toitware/toit-morse --name=alt_morse
+  toit pkg install toitware/toit-morse --prefix=alt_morse
 
   # Install a local package folder by path.
+	# By default the name in the package's package.yaml is used as prefix.
   toit pkg install --local ../my_other_package
-  toit pkg install --local submodules/my_other_package --name=other
+  toit pkg install --local submodules/my_other_package --prefix=other
 `,
 		Run:     errorCfgRun(handler.pkgInstall),
 		Args:    cobra.MaximumNArgs(1),
@@ -283,7 +283,8 @@ contain local packages.
 	}
 	installCmd.Flags().Bool("local", false, "Treat package argument as local path")
 	installCmd.Flags().Bool("recompute", false, "Recompute dependencies")
-	installCmd.Flags().String("name", "", "The name used for the 'import' clause")
+	installCmd.Flags().String("name", "", "The name used for the 'import' clause. Deprecated: use '--prefix' instead")
+	installCmd.Flags().String("prefix", "", "The prefix used for the 'import' clause")
 	cmd.AddCommand(installCmd)
 
 	cmd.AddCommand(&cobra.Command{
@@ -535,6 +536,18 @@ func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	prefix, err := cmd.Flags().GetString("prefix")
+	if err != nil {
+		return err
+	}
+	if name != "" && prefix != "" {
+		h.ui.ReportError("Only one of 'name' and 'prefix' can be used")
+		return newExitError(1)
+	}
+	if name != "" {
+		prefix = name
+	}
+
 	forceRecompute, err := cmd.Flags().GetBool("recompute")
 	if err != nil {
 		return err
@@ -545,8 +558,8 @@ func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 			h.ui.ReportError("Local flag requires path argument")
 			return newExitError(1)
 		}
-		if name != "" {
-			h.ui.ReportError("Name flag can only be used with a package argument")
+		if prefix != "" {
+			h.ui.ReportError("The prefix flag can only be used with a package argument")
 			return newExitError(1)
 		}
 		err = m.Install(ctx, forceRecompute)
@@ -569,31 +582,33 @@ func (h *pkgHandler) pkgInstall(cmd *cobra.Command, args []string) error {
 		h.ui.ReportError("The '--recompute' flag  can only be used without arguments")
 	}
 
-	installedName := ""
+	installedPrefix := ""
 	pkgString := ""
 
 	if isLocal {
 		p := args[0]
-		installedName, err = m.InstallLocalPkg(ctx, name, p)
+		installedPrefix, err = m.InstallLocalPkg(ctx, prefix, p)
 		pkgString = p
 		if err != nil {
 			return err
 		}
 	} else {
 		id := args[0]
-		installedName, pkgString, err = m.InstallURLPkg(ctx, name, id)
+		installedPrefix, pkgString, err = m.InstallURLPkg(ctx, prefix, id)
 		if err != nil {
 			return err
 		}
 	}
 
-	tpkgUI.ReportInfo("Package '%s' installed with name '%s'", pkgString, installedName)
+	// TODO(florian): Change the output to 'with prefix'.
+	//  Delaying this change to avoid merge conflicts with other pull requests.
+	tpkgUI.ReportInfo("Package '%s' installed with name '%s'", pkgString, installedPrefix)
 
 	h.track(ctx, &tracking.Event{
 		Name: "toit pkg install",
 		Properties: map[string]string{
-			"package":      pkgString,
-			"install_name": installedName,
+			"package":        pkgString,
+			"install_prefix": installedPrefix,
 		},
 	})
 
