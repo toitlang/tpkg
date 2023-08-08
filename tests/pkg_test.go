@@ -960,6 +960,22 @@ func test_toitPkg(t *tedi.T) {
 		})
 	})
 
+	t.Run("Install6", func(t *tedi.T, pt PkgTest) {
+		regPath := filepath.Join(pt.dir, "registry_git_pkgs")
+		pt.GoldToit("test", [][]string{
+			{"pkg", "registry", "add", "--local", "test-reg", regPath},
+			{"// Can't install two packages with '--local'"},
+			{"pkg", "install", "--local", "pkg1", "pkg2"},
+			{"// Can't install two packages with '--prefix'"},
+			{"pkg", "install", "--prefix=foo", "pkg1", "pkg2"},
+			{"// Can't install two packages with '--local' and '--prefix'"},
+			{"pkg", "install", "--local", "--prefix=foo", "pkg1", "pkg2"},
+			{"// Install both packages."},
+			{"pkg", "install", "pkg1", "pkg2"},
+			{"exec", "test.toit"},
+		})
+	})
+
 	t.Run("InstallVersion", func(t *tedi.T, pt PkgTest) {
 		regPath := filepath.Join(pt.dir, "registry_many_versions")
 		pt.GoldToit("test", [][]string{
