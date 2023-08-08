@@ -400,6 +400,9 @@ func ScrapeDescriptionGit(ctx context.Context, url string, v string, allowsLocal
 	} else {
 		httpURL = "https://" + url
 	}
+	if strings.HasSuffix(url, ".git") {
+		url = url[:len(url)-4]
+	}
 
 	verbose("Cloning '%s' into '%s'", httpURL, dir)
 
