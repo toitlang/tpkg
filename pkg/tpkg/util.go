@@ -45,6 +45,14 @@ func isFile(p string) (bool, error) {
 	return true, nil
 }
 
+func doesPathExist(p string) bool {
+	_, err := os.Stat(p)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return err == nil
+}
+
 func URLVersionToRelPath(url string, version string) string {
 	return filepath.Join(urlToRelPath(url), version)
 }
