@@ -703,6 +703,9 @@ func test_toitPkg(t *tedi.T) {
 		pt.GoldToit("install_missing_yaml", [][]string{
 			{"pkg", "install", "--local", "pkg_missing_yaml"},
 		})
+		pt.GoldToit("install_yaml_dir", [][]string{
+			{"pkg", "install", "--local", "pkg_yaml_dir"},
+		})
 	})
 
 	t.Run("List1", func(t *tedi.T, pt PkgTest) {
