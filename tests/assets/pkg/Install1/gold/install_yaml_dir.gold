@@ -1,3 +1,3 @@
 pkg install --local pkg_yaml_dir
 Exit Code: 1
-Error: The package.yaml in 'pkg_yaml_dir' is not a file
+Error: Couldn't read 'package.yaml' at 'pkg_yaml_dir': not a file

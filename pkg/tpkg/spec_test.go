@@ -145,7 +145,7 @@ dependencies:
 `, ui)
 			require.NoError(t, err)
 			assert.Len(t, ui.messages, 1)
-			assert.Equal(t, "Warning: Prefix 'version_warning' has version constraint but no URL", ui.messages[0])
+			assert.Equal(t, "Warning: Package entry for prefix 'version_warning' has version constraint but no URL", ui.messages[0])
 		})
 
 		t.Run("missing all", func(t *testing.T) {
@@ -158,7 +158,7 @@ dependencies:
 `, ui)
 			assert.True(t, IsErrAlreadyReported(err))
 			assert.Len(t, ui.messages, 1)
-			assert.Equal(t, "Error: Package specification for prefix 'missing' is missing 'url' or 'path'", ui.messages[0])
+			assert.Equal(t, "Error: Package entry for prefix 'missing' is missing 'url' or 'path'", ui.messages[0])
 		})
 
 		t.Run("constraint", func(t *testing.T) {
@@ -173,7 +173,7 @@ dependencies:
 `, ui)
 			assert.True(t, IsErrAlreadyReported(err))
 			assert.Len(t, ui.messages, 1)
-			assert.Equal(t, "Error: Prefix 'invalid_constraint' has invalid version constraint: 'not a constraint'", ui.messages[0])
+			assert.Equal(t, "Error: Package entry for prefix 'invalid_constraint' has invalid version constraint: 'not a constraint'", ui.messages[0])
 		})
 
 		t.Run("invalid prefix", func(t *testing.T) {
