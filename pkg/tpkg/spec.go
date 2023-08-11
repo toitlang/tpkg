@@ -217,8 +217,12 @@ func (s *Spec) BuildLockFile(solution *Solution, cache Cache, registries Registr
 			if err != nil {
 				return nil, err
 			}
-			if depSpec.Name == "" {
-				return nil, ui.ReportError("Package '%s' has no name", specPath)
+			name := depSpec.Name
+			if name == "" {
+				// The spec file doesn't have the name inside yet.
+				// Use the one from the registry.
+				// This should only fail for local dependencies.
+				name, _ = registries.nameFor(url, version)
 			}
 			prefixes, err := buildPrefixes(depSpec, true)
 			if err != nil {
@@ -228,7 +232,7 @@ func (s *Spec) BuildLockFile(solution *Solution, cache Cache, registries Registr
 			hash, _ := registries.hashFor(url, version)
 			result.Packages[pkgID] = PackageEntry{
 				URL:      compiler.ToURIPath(url),
-				Name:     depSpec.Name,
+				Name:     name,
 				Version:  version,
 				Hash:     hash,
 				Prefixes: prefixes,
