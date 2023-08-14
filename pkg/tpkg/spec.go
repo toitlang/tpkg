@@ -418,7 +418,7 @@ func (s *Spec) addDep(prefix string, url string, version string, p string, ui UI
 
 // TODO(florian): this function should be shared with the lock-file.
 func isValidName(prefix string) bool {
-	validID := regexp.MustCompile(`^[a-zA-Z_][a-zA-Z0-9_]*$`)
+	validID := regexp.MustCompile(`^[a-zA-Z_](-?[a-zA-Z0-9_])*$`)
 	return validID.MatchString(prefix)
 }
 

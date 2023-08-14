@@ -3,4 +3,4 @@
 import pkg
 
 main:
-  pkg.say_hello
+  pkg.say-hello

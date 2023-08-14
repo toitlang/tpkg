@@ -3,4 +3,4 @@
 import prepkg.pkg2 as pkg2
 
 main:
-  pkg2.say_hello
+  pkg2.say-hello

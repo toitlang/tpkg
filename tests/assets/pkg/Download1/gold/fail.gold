@@ -12,11 +12,11 @@
 ::exec:: main.toit:2:8: error: Package 'bar_git' for prefix 'bar' not found
 ::exec:: import bar
 ::exec::        ^~
-::exec:: main.toit:6:7: error: Unresolved identifier: 'say_hello'
-::exec::   foo.say_hello
+::exec:: main.toit:6:7: error: Unresolved identifier: 'say-hello'
+::exec::   foo.say-hello
 ::exec::       ^~
-::exec:: main.toit:7:7: error: Unresolved identifier: 'say_hello'
-::exec::   bar.say_hello
+::exec:: main.toit:7:7: error: Unresolved identifier: 'say-hello'
+::exec::   bar.say-hello
 ::exec::       ^~
 ::exec:: Compilation failed.
 ::exec:: 
@@ -24,8 +24,8 @@
 ::analyze:: Exit Code: 1
 ::analyze:: <TEST>/main.toit:1:8 error: Package 'foo_git' for prefix 'foo' not found
 ::analyze:: <TEST>/main.toit:2:8 error: Package 'bar_git' for prefix 'bar' not found
-::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say_hello'
-::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say-hello'
+::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say-hello'
 ::analyze:: <TEST>/package.lock:8:10 error: Package '<GIT_URL>/bar_git-2.0.1' not found
 ::analyze:: <TEST>/package.lock:15:10 error: Package '<GIT_URL>/foo_git-1.2.3' not found
 ::analyze:: 

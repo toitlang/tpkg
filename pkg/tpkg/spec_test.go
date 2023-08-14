@@ -176,19 +176,34 @@ dependencies:
 			assert.Equal(t, "Error: Package entry for prefix 'invalid_constraint' has invalid version constraint: 'not a constraint'", ui.messages[0])
 		})
 
-		t.Run("invalid prefix", func(t *testing.T) {
+		t.Run("invalid prefix space", func(t *testing.T) {
 			ui := &testUI{}
 			var spec Spec
 			err := spec.ParseString(`
 name: foo
 dependencies:
-  invalid-prefix:
+  invalid prefix:
     url: github.com/foo/bar
 `, ui)
 			assert.True(t, IsErrAlreadyReported(err))
 			assert.Len(t, ui.messages, 1)
-			assert.Equal(t, "Error: Invalid prefix: 'invalid-prefix'", ui.messages[0])
+			assert.Equal(t, "Error: Invalid prefix: 'invalid prefix'", ui.messages[0])
 		})
+
+		t.Run("invalid prefix number", func(t *testing.T) {
+			ui := &testUI{}
+			var spec Spec
+			err := spec.ParseString(`
+name: foo
+dependencies:
+  0invalid-prefix:
+    url: github.com/foo/bar
+`, ui)
+			assert.True(t, IsErrAlreadyReported(err))
+			assert.Len(t, ui.messages, 1)
+			assert.Equal(t, "Error: Invalid prefix: '0invalid-prefix'", ui.messages[0])
+		})
+
 	})
 }
 
