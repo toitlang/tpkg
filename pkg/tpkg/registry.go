@@ -583,12 +583,24 @@ func (gr *sshGitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui U
 	return gr.pathRegistry.Load(ctx, sync, cache, ui)
 }
 
-// hashFor finds the has for the package with the given url and version.
+// hashFor finds the hash for the package with the given url and version.
 func (registries Registries) hashFor(url string, version string) (string, error) {
 	for _, registry := range registries {
 		for _, entry := range registry.Entries() {
 			if entry.URL == url && entry.Version == version {
 				return entry.Hash, nil
+			}
+		}
+	}
+	return "", fmt.Errorf("not found")
+}
+
+// nameFor finds the name for the package with the given url and version.
+func (registries Registries) nameFor(url string, version string) (string, error) {
+	for _, registry := range registries {
+		for _, entry := range registry.Entries() {
+			if entry.URL == url && entry.Version == version {
+				return entry.Name, nil
 			}
 		}
 	}
