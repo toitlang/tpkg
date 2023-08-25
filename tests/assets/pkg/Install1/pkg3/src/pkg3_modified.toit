@@ -1,4 +1,4 @@
 // Copyright (C) 2023 Toitware ApS. All rights reserved.
 
-say_hello:
+say-hello:
   print "hello from pkg3_modified"

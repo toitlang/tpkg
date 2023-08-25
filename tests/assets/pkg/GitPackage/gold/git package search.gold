@@ -8,11 +8,11 @@
 ::exec:: main.toit:4:8: error: Package for prefix 'bar' not found
 ::exec:: import bar
 ::exec::        ^~
-::exec:: main.toit:7:7: error: Unresolved identifier: 'say_hello'
-::exec::   foo.say_hello
+::exec:: main.toit:7:7: error: Unresolved identifier: 'say-hello'
+::exec::   foo.say-hello
 ::exec::       ^~
-::exec:: main.toit:8:7: error: Unresolved identifier: 'say_hello'
-::exec::   bar.say_hello
+::exec:: main.toit:8:7: error: Unresolved identifier: 'say-hello'
+::exec::   bar.say-hello
 ::exec::       ^~
 ::exec:: Compilation failed.
 ::exec:: 
@@ -20,8 +20,8 @@
 ::analyze:: Exit Code: 1
 ::analyze:: <TEST>/main.toit:3:8 error: Package for prefix 'foo' not found
 ::analyze:: <TEST>/main.toit:4:8 error: Package for prefix 'bar' not found
-::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say_hello'
-::analyze:: <TEST>/main.toit:8:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main.toit:7:7 error: Unresolved identifier: 'say-hello'
+::analyze:: <TEST>/main.toit:8:7 error: Unresolved identifier: 'say-hello'
 ::analyze:: 
 ===================
 // Install packages from the registry
@@ -58,11 +58,11 @@ Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'bar'
 ::exec:: main2.toit:4:8: error: Package for prefix 'pre2' not found
 ::exec:: import pre2.bar
 ::exec::        ^~
-::exec:: main2.toit:7:7: error: Unresolved identifier: 'say_hello'
-::exec::   foo.say_hello
+::exec:: main2.toit:7:7: error: Unresolved identifier: 'say-hello'
+::exec::   foo.say-hello
 ::exec::       ^~
-::exec:: main2.toit:8:7: error: Unresolved identifier: 'say_hello'
-::exec::   bar.say_hello
+::exec:: main2.toit:8:7: error: Unresolved identifier: 'say-hello'
+::exec::   bar.say-hello
 ::exec::       ^~
 ::exec:: Compilation failed.
 ::exec:: 
@@ -70,8 +70,8 @@ Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'bar'
 ::analyze:: Exit Code: 1
 ::analyze:: <TEST>/main2.toit:3:8 error: Package for prefix 'pre1' not found
 ::analyze:: <TEST>/main2.toit:4:8 error: Package for prefix 'pre2' not found
-::analyze:: <TEST>/main2.toit:7:7 error: Unresolved identifier: 'say_hello'
-::analyze:: <TEST>/main2.toit:8:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main2.toit:7:7 error: Unresolved identifier: 'say-hello'
+::analyze:: <TEST>/main2.toit:8:7 error: Unresolved identifier: 'say-hello'
 ::analyze:: 
 ===================
 pkg install --prefix=pre1 foo

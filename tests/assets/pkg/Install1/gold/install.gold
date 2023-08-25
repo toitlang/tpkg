@@ -3,15 +3,15 @@
 ::exec:: main.toit:3:8: error: Package for prefix 'pkg' not found
 ::exec:: import pkg
 ::exec::        ^~
-::exec:: main.toit:6:7: error: Unresolved identifier: 'say_hello'
-::exec::   pkg.say_hello
+::exec:: main.toit:6:7: error: Unresolved identifier: 'say-hello'
+::exec::   pkg.say-hello
 ::exec::       ^~
 ::exec:: Compilation failed.
 ::exec:: 
 ::analyze:: analyze main.toit
 ::analyze:: Exit Code: 1
 ::analyze:: <TEST>/main.toit:3:8 error: Package for prefix 'pkg' not found
-::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say_hello'
+::analyze:: <TEST>/main.toit:6:7 error: Unresolved identifier: 'say-hello'
 ::analyze:: 
 ===================
 pkg install --local pkg

@@ -1,4 +1,4 @@
 import foo
 
 main:
-  foo.say_hello
+  foo.say-hello

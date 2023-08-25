@@ -75,7 +75,7 @@ jobs:
         id: toit
         shell: bash
         run: |
-          curl -O -L https://github.com/toitlang/toit/releases/download/v0.14.0/${{ steps.constants.outputs.toit_archive }}
+          curl -O -L https://github.com/toitlang/toit/releases/download/v2.0.0-alpha.95/${{ steps.constants.outputs.toit_archive }}
           tar x -f ${{ steps.constants.outputs.toit_archive }}
 
       - name: Build
