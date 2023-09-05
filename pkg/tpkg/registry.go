@@ -411,9 +411,8 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 				return ui.ReportError("Path %p exists but is not a directory", p)
 			}
 
-			isClean := true
 			if exists {
-				isClean, err = git.IsClean(p)
+				isClean, err := git.IsClean(p)
 				if err != nil {
 					isClean = false
 				}
