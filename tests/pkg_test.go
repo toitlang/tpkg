@@ -1198,13 +1198,10 @@ func test_toitPkg(t *tedi.T) {
 				})
 			}
 
-			// Check that the 'foo' file is gone, unless we didn't use the --clear-cache flag.
+			// Check that the 'foo' file is gone.
+			// The first time there should be a warning that the repository wasn't clean.
 			_, err = os.Stat(cacheFile)
-			if i == 0 {
-				assert.NoError(t, err)
-			} else {
-				assert.True(t, os.IsNotExist(err))
-			}
+			assert.True(t, os.IsNotExist(err))
 		}
 	})
 
