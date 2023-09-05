@@ -1,0 +1,19 @@
+pkg describe pkg_dirs/kebab_name
+Exit Code: 0
+kebab-name:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  
+===================
+pkg describe --verbose pkg_dirs/kebab_name
+Exit Code: 0
+kebab-name:
+  description: desc_from_spec
+  url: <Not scraped for local paths>
+  version: <Not scraped for local paths>
+  license: MIT
+  hash: <Not scraped for local paths>
+  
