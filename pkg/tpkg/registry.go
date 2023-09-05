@@ -412,38 +412,17 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			}
 
 			if exists {
-				err := git.Pull(p, git.PullOptions{})
-				if err != nil {
-					return err
-				}
+				err = git.Pull(p, git.PullOptions{})
 			} else {
-				url := gr.url
-
-				var err error
-				// The go-git library doesn't support cloning repositories that use 'main' as
-				// default branch: https://github.com/go-git/go-git/issues/363
-				// We therefore try different ones.
-				// It's advantageous to try the correct one first.
-				for _, branch := range []string{"main", "master", "trunk"} {
-					_, branchErr := git.Clone(ctx, p, git.CloneOptions{
-						URL:          url,
-						SingleBranch: true,
-						Branch:       branch,
-					})
-					if branchErr == nil {
-						err = nil
-						break
-					}
-					if err == nil || !strings.Contains(branchErr.Error(), "couldn't find remote ref") {
-						err = branchErr
-					}
-
-				}
-				if err != nil {
-					return err
-				}
-				gr.path = p
+				_, err = git.Clone(ctx, p, git.CloneOptions{
+					URL:          gr.url,
+					SingleBranch: true,
+				})
 			}
+			if err != nil {
+				return err
+			}
+			gr.path = p
 			return nil
 		})
 		if err != nil {
