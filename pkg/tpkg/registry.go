@@ -412,6 +412,18 @@ func (gr *gitRegistry) Load(ctx context.Context, sync bool, cache Cache, ui UI) 
 			}
 
 			if exists {
+				isClean, err := git.IsClean(p)
+				if err != nil {
+					isClean = false
+				}
+				if !isClean {
+					ui.ReportWarning("Registry '%s' is not clean. It will be reset.", gr.Name())
+					// Delete the directory.
+					os.RemoveAll(p)
+					exists = false
+				}
+			}
+			if exists {
 				err = git.Pull(p, git.PullOptions{})
 			} else {
 				_, err = git.Clone(ctx, p, git.CloneOptions{

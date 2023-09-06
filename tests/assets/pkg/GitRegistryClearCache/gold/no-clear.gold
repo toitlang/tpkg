@@ -1,6 +1,7 @@
 pkg registry sync
 Exit Code: 0
 Info: Syncing 'test-reg'
+Warning: Registry 'test-reg' is not clean. It will be reset.
 ===================
 pkg list
 Exit Code: 0

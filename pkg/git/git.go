@@ -167,3 +167,19 @@ func Pull(path string, options PullOptions) error {
 	}
 	return nil
 }
+
+func IsClean(path string) (bool, error) {
+	repository, err := gogit.PlainOpen(path)
+	if err != nil {
+		return false, err
+	}
+	wt, err := repository.Worktree()
+	if err != nil {
+		return false, err
+	}
+	status, err := wt.Status()
+	if err != nil {
+		return false, err
+	}
+	return status.IsClean(), nil
+}
