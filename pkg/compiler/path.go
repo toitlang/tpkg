@@ -73,11 +73,12 @@ type URIPath string
 
 // ToURIPath takes a URL and converts it to an URIPath.
 func ToURIPath(u string) URIPath {
-	// Split the URL at '/'.
+	// Split the URL at '/' and '\\'.
+	u = strings.ReplaceAll(u, "\\", "/")
 	segments := strings.Split(u, "/")
 	// Escape each segment.
 	for i, segment := range segments {
-		segments[i] = url.PathEscape(segment)
+		segments[i] = url.QueryEscape(segment)
 		// If the segment is one of the dangerous filenames (on Windows), then escape it.
 		all_dangerous := []string{
 			"",
@@ -111,7 +112,7 @@ func (up URIPath) URL() string {
 		if strings.HasSuffix(segments[i], "%") {
 			segment = segment[:len(segment)-1]
 		}
-		segments[i], _ = url.PathUnescape(segment)
+		segments[i], _ = url.QueryUnescape(segment)
 	}
 	return strings.Join(segments, "/")
 }
