@@ -16,6 +16,7 @@
 package compiler
 
 import (
+	"net/url"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -62,27 +63,57 @@ func fromCompilerPath(path Path, onWindows bool) string {
 
 // URIPath is a url suitable as a '/' separated path.
 // That is, the URL can be used as a path once the '/'s are translated to OS specific
-// path-segment separators. Most importantly, such a URL does not contain any `:`.
-// If the the escaped URL does not have any scheme (like "https://"), then the
-// `string(escapedURLPath)` is a valid URL.
-// For example:
-// the url 'host.com/c:/foo/bar' is legal, but we wouldn't be able to create
-// a folder '.packages/host.com/c:/foo/bar' on Windows, as ':' in paths are not
-// allowed there.
-// The URIPath fixes this by escaping the ':'.
+// path-segment separators. Most importantly, such a URL does not contain any `:` or
+// any other characters that are not allowed in paths.
+// The URIPath is used in lock files where the compiler uses it to find the
+// dependent packages.
+// A URIPath can always be converted back to the original URL.
+// A URIPath doesn't need to be a valid URL (although it typically is and resembles one).
 type URIPath string
 
 // ToURIPath takes a URL and converts it to an URIPath.
-// If the given url does not have any scheme (with a ':'), then the returned
-// value is a valid URL.
-func ToURIPath(url string) URIPath {
-	return URIPath(strings.ReplaceAll(url, ":", "%3A"))
+func ToURIPath(u string) URIPath {
+	// Split the URL at '/'.
+	segments := strings.Split(u, "/")
+	// Escape each segment.
+	for i, segment := range segments {
+		segments[i] = url.PathEscape(segment)
+		// If the segment is one of the dangerous filenames (on Windows), then escape it.
+		all_dangerous := []string{
+			"",
+			"CON", "PRN", "AUX", "NUL",
+			"COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
+			"LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
+		}
+		for _, dangerous := range all_dangerous {
+			if strings.ToUpper(segments[i]) == dangerous {
+				// Escape the segment by adding a '%' at the end.
+				// This ensures that the segment is a valid file name.
+				// It's not a valid URL anymore, as the '%' is not a correct escape. However,
+				// this also guarantees that we don't accidentally clash with any other
+				// segment.
+				segments[i] = segments[i] + "%"
+			}
+		}
+		if strings.HasSuffix(segments[i], ".") {
+			segments[i] = segments[i] + "%"
+		}
+	}
+	return URIPath(strings.Join(segments, "/"))
 }
 
 // URL undoes the escaping done in ToEscapedURLPath.
-// If the URL contained other escaped ':', then those are unescaped as well.
 func (up URIPath) URL() string {
-	return strings.ReplaceAll(string(up), "%3A", ":")
+	// Split the URL at '/'.
+	segments := strings.Split(string(up), "/")
+	// Unescape each segment.
+	for i, segment := range segments {
+		if strings.HasSuffix(segments[i], "%") {
+			segment = segment[:len(segment)-1]
+		}
+		segments[i], _ = url.PathUnescape(segment)
+	}
+	return strings.Join(segments, "/")
 }
 
 func (up URIPath) FilePath() string {
