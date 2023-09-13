@@ -102,6 +102,13 @@ func (d *Desc) Parse(b []byte, ui UI) error {
 		return fail(err)
 	}
 
+	// Force the URL to be lower-case.
+	// This avoids issues with case-insensitive file systems, and with
+	// projects that have been registered with different casing.
+	if !strings.HasPrefix(d.URL, TestGitPathHost) {
+		d.URL = strings.ToLower(d.URL)
+	}
+
 	if err := d.Validate(ui); err != nil {
 		return fail(err)
 	}
@@ -394,7 +401,15 @@ func ScrapeDescriptionGit(ctx context.Context, url string, v string, allowsLocal
 	// We thus add another segment to the directory path.
 	dir := filepath.Join(tmpDir, "pkg")
 
+	// Force the url to be lower-case.
+	// This avoids issues with case-insensitive file systems, and with
+	// projects that have been registered with different casing.
+	if !strings.HasPrefix(url, TestGitPathHost) {
+		url = strings.ToLower(url)
+	}
+
 	httpURL := url
+
 	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 		url = url[strings.Index(url, "/")+2:]
 	} else {

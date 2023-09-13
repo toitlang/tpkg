@@ -469,6 +469,7 @@ func (pt PkgTest) ToitNegative(args ...string) string {
 func (pt PkgTest) normalizeGold(gold string) string {
 	gitDir := computeGitDir(pt.dir)
 	gold = strings.ReplaceAll(gold, gitDir, "<GIT_URL>")
+	gold = strings.ReplaceAll(gold, strings.ToLower(gitDir), "<GIT_URL>")
 	// When showing lock-file entries we might also see escaped git entries.
 	// We can't use a different replacement, as the escaping is dependent on the OS.
 	escapedGitURL := string(compiler.ToURIPath(gitDir))
@@ -1436,6 +1437,9 @@ func test_toitPkg(t *tedi.T) {
 	t.Run("ScrapeGit", func(t *tedi.T, pt PkgTest) {
 		pt.GoldToit("morse", [][]string{
 			{"pkg", "describe", "github.com/toitware/toit-morse", "1.0.6"},
+		})
+		pt.GoldToit("morse-upper", [][]string{
+			{"pkg", "describe", "githUb.com/toitware/toit-MoRse", "1.0.6"},
 		})
 		pt.GoldToit("https_morse", [][]string{
 			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6"},
