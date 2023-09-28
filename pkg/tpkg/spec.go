@@ -346,6 +346,13 @@ func (s *Spec) visitLocalDeps(ui UI, cb func(pkgPath string, fullPath string, de
 				}
 			}
 
+			// 'filepath.Rel' sometimes adds '/.' to the path, which we don't want.
+			// Generally, just remove any trailing '/.'.
+			slashDot := string(filepath.Separator) + "."
+			if pkgPath != slashDot {
+				pkgPath = strings.TrimSuffix(pkgPath, slashDot)
+			}
+
 			fullPath := pkgPath
 			if !filepath.IsAbs(fullPath) {
 				fullPath = filepath.Join(entryDir, fullPath)
