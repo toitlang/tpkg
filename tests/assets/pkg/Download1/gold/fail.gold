@@ -18,7 +18,7 @@
 ::exec:: main.toit:7:7: error: Unresolved identifier: 'say-hello'
 ::exec::   bar.say-hello
 ::exec::       ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main.toit
 ::analyze:: Exit Code: 1
