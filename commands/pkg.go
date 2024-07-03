@@ -214,7 +214,7 @@ If the --project-root flag is used, initializes that directory instead.`,
 		Run:  errorCfgRun(handler.pkgInit),
 		Args: cobra.NoArgs,
 	}
-	initCmd.Flags().String("name", "my-package", "The name of the package")
+	initCmd.Flags().String("name", "", "The name of the package")
 	initCmd.Flags().String("description", "", "The description of the package")
 	cmd.AddCommand(initCmd)
 

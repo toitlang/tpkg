@@ -35,8 +35,8 @@ import (
 // 2. specify the prefix-dependency mapping.
 type Spec struct {
 	path        string          `yaml:"-"`
-	Name        string          `yaml:"name"`
-	Description string          `yaml:"description"`
+	Name        string          `yaml:"name,omitempty"`
+	Description string          `yaml:"description,omitempty"`
 	License     string          `yaml:"license,omitempty"`
 	Environment SpecEnvironment `yaml:"environment,omitempty"`
 	Deps        DependencyMap   `yaml:"dependencies,omitempty"`

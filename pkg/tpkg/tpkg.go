@@ -44,10 +44,6 @@ func lockPathForDir(dir string) string {
 // InitDirectory initializes the project root as the root for a package or application.
 // If no root is given, initializes the current directory instead.
 func InitDirectory(projectRoot string, name string, description string, ui UI) error {
-	if name == "" {
-		return ui.ReportError("Name must be provided")
-	}
-
 	dir := projectRoot
 	if dir == "" {
 		cwd, err := os.Getwd()
