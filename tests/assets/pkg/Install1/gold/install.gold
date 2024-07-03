@@ -6,7 +6,7 @@
 ::exec:: main.toit:6:7: error: Unresolved identifier: 'say-hello'
 ::exec::   pkg.say-hello
 ::exec::       ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main.toit
 ::analyze:: Exit Code: 1

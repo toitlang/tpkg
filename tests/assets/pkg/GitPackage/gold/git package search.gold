@@ -14,7 +14,7 @@
 ::exec:: main.toit:8:7: error: Unresolved identifier: 'say-hello'
 ::exec::   bar.say-hello
 ::exec::       ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main.toit
 ::analyze:: Exit Code: 1
@@ -64,7 +64,7 @@ Info: Package '<GIT_URL>/bar_git@2.0.1' installed with name 'bar'
 ::exec:: main2.toit:8:7: error: Unresolved identifier: 'say-hello'
 ::exec::   bar.say-hello
 ::exec::       ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main2.toit
 ::analyze:: Exit Code: 1

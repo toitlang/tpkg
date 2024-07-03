@@ -8,7 +8,7 @@
 ::exec:: main.toit:6:14: error: Unresolved identifier: 'identify'
 ::exec::   print pkg4.identify
 ::exec::              ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main.toit
 ::analyze:: Exit Code: 1
@@ -24,7 +24,7 @@
 ::exec:: main2.toit:6:14: error: Unresolved identifier: 'identify'
 ::exec::   print pkg1.identify
 ::exec::              ^~
-::exec:: Compilation failed.
+::exec:: Compilation failed
 ::exec:: 
 ::analyze:: analyze main2.toit
 ::analyze:: Exit Code: 1
