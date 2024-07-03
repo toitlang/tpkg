@@ -18,7 +18,6 @@ package commands
 import (
 	"bytes"
 	"context"
-	"crypto/des"
 	"encoding/json"
 	"fmt"
 	"log"
