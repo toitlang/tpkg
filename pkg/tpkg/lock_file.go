@@ -59,44 +59,6 @@ type PackageEntry struct {
 	Prefixes PrefixMap        `yaml:"prefixes,omitempty"`
 }
 
-func (lf *LockFile) equals(other *LockFile) bool {
-	if lf.SDK != other.SDK {
-		return false
-	}
-	if !prefixMapEquals(lf.Prefixes, other.Prefixes) {
-		return false
-	}
-	if len(lf.Packages) != len(other.Packages) {
-		return false
-	}
-	for k, v := range lf.Packages {
-		otherV, ok := other.Packages[k]
-		if !ok || !v.equals(otherV) {
-			return false
-		}
-	}
-	return true
-}
-
-func (pe PackageEntry) equals(other PackageEntry) bool {
-	if pe.URL != other.URL || pe.Name != other.Name || pe.Version != other.Version || pe.Path != other.Path || pe.Hash != other.Hash {
-		return false
-	}
-	return prefixMapEquals(pe.Prefixes, other.Prefixes)
-}
-
-func prefixMapEquals(a, b PrefixMap) bool {
-	if len(a) != len(b) {
-		return false
-	}
-	for k, v := range a {
-		if v != b[k] {
-			return false
-		}
-	}
-	return true
-}
-
 // PrefixMap has a mapping from prefix to package-id.
 type PrefixMap map[string]string
 
@@ -129,22 +91,16 @@ func ReadLockFile(path string) (*LockFile, error) {
 }
 
 func (lf *LockFile) WriteToFile() error {
-	// Check whether the file already exists and has the same content.
+	// Write the YAML to memory first, and then compare it with any
+	// existing file.
 	// We don't want to touch files if they don't change.
-
-	if _, err := os.Stat(lf.path); err == nil {
-		// File exists. Check whether it has the same content.
-		existingLock, err := ReadLockFile(lf.path)
-		if err == nil && existingLock != nil && lf.equals(existingLock) {
-			return nil
-		}
-	}
 
 	b, err := yaml.Marshal(lf)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(lf.path, b, 0644)
+
+	return writeFileIfChanged(lf.path, b)
 }
 
 // PrintLockFile prints the contents of the lock file for the current project.

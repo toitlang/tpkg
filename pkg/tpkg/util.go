@@ -16,6 +16,7 @@
 package tpkg
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -73,4 +74,29 @@ func sdkConstraintToMinSDK(sdk string) (*version.Version, error) {
 		return nil, err
 	}
 	return minSDK, nil
+}
+
+func writeFileIfChanged(path string, content []byte) error {
+	// Check whether the file already exists and has the same content.
+	// We don't want to touch files if they don't change.
+	if _, err := os.Stat(path); err == nil {
+		oldContent, err := os.ReadFile(path)
+		if err == nil && bytes.Equal(oldContent, content) {
+			return nil
+		}
+	}
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		e := file.Close()
+		if e != nil {
+			err = e
+		}
+	}()
+
+	_, err = file.Write(content)
+	return err
 }
