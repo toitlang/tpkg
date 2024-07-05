@@ -18,7 +18,6 @@ package tpkg
 import (
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -44,6 +43,25 @@ type Spec struct {
 
 type SpecEnvironment struct {
 	SDK string `yaml:"sdk,omitempty"`
+}
+
+func (s *Spec) equals(other *Spec) bool {
+	if s.Name != other.Name || s.Description != other.Description || s.License != other.License || s.Environment.SDK != other.Environment.SDK {
+		return false
+	}
+	if len(s.Deps) != len(other.Deps) {
+		return false
+	}
+	for prefix, dep := range s.Deps {
+		otherDep, ok := other.Deps[prefix]
+		if !ok {
+			return false
+		}
+		if dep.URL != otherDep.URL || dep.Version != otherDep.Version || dep.Path != otherDep.Path {
+			return false
+		}
+	}
+	return true
 }
 
 // DependencyMap is a map from prefix to package.
@@ -111,7 +129,7 @@ func (s *Spec) Validate(ui UI) error {
 
 func (s *Spec) ParseFile(filename string, ui UI) error {
 	s.path = filename
-	b, err := ioutil.ReadFile(filename)
+	b, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
@@ -134,6 +152,15 @@ func (s *Spec) WriteYAML(writer io.Writer) error {
 }
 
 func (s *Spec) WriteToFile() error {
+	// Check whether the file already exists and has the same content.
+	// We don't want to touch files if they don't change.
+	if _, err := os.Stat(s.path); err == nil {
+		existingSpec, err := ReadSpec(s.path, nullUI{})
+		if err == nil && existingSpec != nil && s.equals(existingSpec) {
+			return nil
+		}
+	}
+
 	file, err := os.Create(s.path)
 	if err != nil {
 		return err
