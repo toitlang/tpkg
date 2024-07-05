@@ -2,8 +2,8 @@ BUILD_DIR := build
 
 GO_PACKAGE := github.com/toitlang/tpkg
 
-# The TOITC_PATH needs to be absolute so that 'toit.lsp' can find it.
-TOITC_PATH ?= $(shell command -v toit.compile)
+# When rebuilding gold files, the TOITC_PATH must be changed to be absolute.
+TOITC_PATH ?= toit.compile
 TOITLSP_PATH ?= toit.lsp
 TOITVM_PATH ?= toit.run
 TOITPKG_PATH ?= $(CURDIR)/$(BUILD_DIR)/toitpkg
