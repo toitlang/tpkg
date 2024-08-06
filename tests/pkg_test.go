@@ -1436,40 +1436,47 @@ func test_toitPkg(t *tedi.T) {
 
 	t.Run("ScrapeGit", func(t *tedi.T, pt PkgTest) {
 		pt.GoldToit("morse", [][]string{
-			{"pkg", "describe", "github.com/toitware/toit-morse", "1.0.6"},
+			{"pkg", "describe", "github.com/toitware/toit-morse", "v1.0.6"},
 		})
 		pt.GoldToit("morse-upper", [][]string{
-			{"pkg", "describe", "githUb.com/toitware/toit-MoRse", "1.0.6"},
+			{"pkg", "describe", "githUb.com/toitware/toit-MoRse", "v1.0.6"},
 		})
 		pt.GoldToit("https_morse", [][]string{
-			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6"},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "v1.0.6"},
 		})
 		pt.GoldToit("https_morse_dot_git", [][]string{
-			{"pkg", "describe", "https://github.com/toitware/toit-morse.git", "1.0.6"},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse.git", "v1.0.6"},
 		})
 
 		pt.GoldToit("not_found", [][]string{
-			{"pkg", "describe", "https://toit.io/testing/not_exist", "1.0.0"},
+			{"pkg", "describe", "https://toit.io/testing/not_exist", "v1.0.0"},
 		})
 
 		pt.GoldToit("bad_version", [][]string{
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.0"},
 			{"pkg", "describe", "https://github.com/toitware/toit-morse", "bad-version"},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "vbad-version"},
+		})
+
+		pt.GoldToit("bad_sem_version", [][]string{
+			{"pkg", "describe", "https://github.com/toitware/toit-ignore", "1.0"},
+			{"pkg", "describe", "https://github.com/toitware/toit-ignore", "v1.0"},
 		})
 
 		pt.GoldToit("deep", [][]string{
-			{"pkg", "describe", "https://github.com/toitware/test-pkg.git/foo", "1.0.0"},
+			{"pkg", "describe", "https://github.com/toitware/test-pkg.git/foo", "v1.0.0"},
 		})
 
 		pt.GoldToit("local_dep", [][]string{
-			{"pkg", "describe", "https://github.com/toitware/test-pkg.git/local_dep", "1.0.0"},
-			{"pkg", "describe", "--allow-local-deps", "https://github.com/toitware/test-pkg.git/local_dep", "1.0.0"},
+			{"pkg", "describe", "https://github.com/toitware/test-pkg.git/local_dep", "v1.0.0"},
+			{"pkg", "describe", "--allow-local-deps", "https://github.com/toitware/test-pkg.git/local_dep", "v1.0.0"},
 		})
 
 		outDir := filepath.Join(pt.dir, "out")
 		pt.GoldToit("write", [][]string{
 			{"pkg", "describe", ".", "--out-dir=foo"},
 			{"pkg", "describe", "--out-dir=foo"},
-			{"pkg", "describe", "https://github.com/toitware/toit-morse", "1.0.6", "--out-dir=" + outDir},
+			{"pkg", "describe", "https://github.com/toitware/toit-morse", "v1.0.6", "--out-dir=" + outDir},
 		})
 		descPath := filepath.Join(pt.dir, "out", "packages", "github.com", "toitware", "toit-morse", "1.0.6", "desc.yaml")
 		assert.FileExists(t, descPath)
@@ -1499,9 +1506,9 @@ func test_toitPkg(t *tedi.T) {
 		registryDir := filepath.Join(pt.dir, "nested_registry")
 		pt.GoldToit("test", [][]string{
 			{"pkg", "registry", "add", "--local", "deep", registryDir},
-			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/foo", "1.0.0"},
-			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/foo", "2.3.0"},
-			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/bar/gee", "1.0.1"},
+			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/foo", "v1.0.0"},
+			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/foo", "v2.3.0"},
+			{"pkg", "describe", "--out-dir=" + registryDir, "github.com/toitware/test-pkg.git/bar/gee", "v1.0.1"},
 			{"pkg", "list"},
 			{"pkg", "install"},
 			{"exec", "test.toit"},

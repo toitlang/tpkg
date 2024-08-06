@@ -3,6 +3,7 @@ module github.com/toitlang/tpkg
 go 1.20
 
 require (
+	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/alessio/shellescape v1.4.1
 	github.com/alexflint/go-filemutex v1.1.0
 	github.com/go-git/go-git/v5 v5.8.1
@@ -30,14 +31,11 @@ require (
 	github.com/go-git/go-billy/v5 v5.4.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.3.2 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
-	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/pelletier/go-toml v1.2.0 // indirect
 	github.com/pjbgf/sha1cd v0.3.0 // indirect
@@ -57,7 +55,6 @@ require (
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/genproto v0.0.0-20191108220845-16a3f7862a1a // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
