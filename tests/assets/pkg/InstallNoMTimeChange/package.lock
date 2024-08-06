@@ -1,0 +1,7 @@
+prefixes:
+  pkg1: pkg1
+
+packages:
+  pkg1:
+    url: '<[*TEST_GIT_DIR_ESCAPE*]>/git_pkgs/pkg1'
+    version: 1.0.0
