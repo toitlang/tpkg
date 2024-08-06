@@ -1,4 +1,4 @@
-pkg describe https://github.com/toitware/toit-morse 1.0.6
+pkg describe https://github.com/toitware/toit-morse v1.0.6
 Exit Code: 0
 morse:
   description: Functions for International (ITU) Morse code.

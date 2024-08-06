@@ -1,15 +1,15 @@
 pkg registry add --local deep <TEST>/nested_registry
 Exit Code: 0
 ===================
-pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo 1.0.0
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo v1.0.0
 Exit Code: 0
 Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/foo/1.0.0/desc.yaml'
 ===================
-pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo 2.3.0
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/foo v2.3.0
 Exit Code: 0
 Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/foo/2.3.0/desc.yaml'
 ===================
-pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/bar/gee 1.0.1
+pkg describe --out-dir=<TEST>/nested_registry github.com/toitware/test-pkg.git/bar/gee v1.0.1
 Exit Code: 0
 Info: Wrote '<TEST>/nested_registry/packages/github.com/toitware/test-pkg.git/bar/gee/1.0.1/desc.yaml'
 ===================

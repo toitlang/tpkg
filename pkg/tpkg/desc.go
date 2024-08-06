@@ -24,6 +24,7 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/hashicorp/go-version"
 	"gopkg.in/yaml.v2"
 )
@@ -385,8 +386,12 @@ func ScrapeDescriptionGit(ctx context.Context, url string, v string, allowsLocal
 	}
 
 	originalVersion := v
-	v = strings.TrimPrefix(v, "v")
-	_, err := version.NewVersion(v)
+	if !strings.HasPrefix(v, "v") {
+		return nil, ui.ReportError("Invalid version: '%s', not starting with 'v'", originalVersion)
+	}
+	v = v[1:]
+	// Check that it is a valid semantic version.
+	_, err := semver.StrictNewVersion(v)
 	if err != nil {
 		return nil, ui.ReportError("Invalid version: '%s'", originalVersion)
 	}

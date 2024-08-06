@@ -1,4 +1,4 @@
-pkg describe https://github.com/toitware/test-pkg.git/foo 1.0.0
+pkg describe https://github.com/toitware/test-pkg.git/foo v1.0.0
 Exit Code: 0
 foo:
   description: nested package foo

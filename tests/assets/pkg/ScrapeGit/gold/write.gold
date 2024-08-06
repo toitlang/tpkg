@@ -6,6 +6,6 @@ pkg describe --out-dir=foo
 Exit Code: 1
 Error: The --out-dir flag requires a URL and version
 ===================
-pkg describe https://github.com/toitware/toit-morse 1.0.6 --out-dir=<TEST>/out
+pkg describe https://github.com/toitware/toit-morse v1.0.6 --out-dir=<TEST>/out
 Exit Code: 0
 Info: Wrote '<TEST>/out/packages/github.com/toitware/toit-morse/1.0.6/desc.yaml'

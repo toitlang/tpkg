@@ -1,0 +1,7 @@
+pkg describe https://github.com/toitware/toit-ignore 1.0
+Exit Code: 1
+Error: Invalid version: '1.0', not starting with 'v'
+===================
+pkg describe https://github.com/toitware/toit-ignore v1.0
+Exit Code: 1
+Error: Invalid version: 'v1.0'
