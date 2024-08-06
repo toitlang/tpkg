@@ -214,6 +214,8 @@ If the --project-root flag is used, initializes that directory instead.`,
 		Run:  errorCfgRun(handler.pkgInit),
 		Args: cobra.NoArgs,
 	}
+	initCmd.Flags().String("name", "", "The name of the package")
+	initCmd.Flags().String("description", "", "The description of the package")
 	cmd.AddCommand(initCmd)
 
 	installCmd := &cobra.Command{
@@ -679,8 +681,16 @@ func (h *pkgHandler) pkgInit(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	name, err := cmd.Flags().GetString("name")
+	if err != nil {
+		return err
+	}
+	description, err := cmd.Flags().GetString("description")
+	if err != nil {
+		return err
+	}
 
-	err = tpkg.InitDirectory(projectRoot, tpkgUI)
+	err = tpkg.InitDirectory(projectRoot, name, description, tpkgUI)
 	if IsAlreadyExistsError(err) {
 		return h.ui.ReportError(ErrorMessage(err))
 	} else if err != nil {

@@ -16,9 +16,9 @@
 package tpkg
 
 import (
+	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -111,7 +111,7 @@ func (s *Spec) Validate(ui UI) error {
 
 func (s *Spec) ParseFile(filename string, ui UI) error {
 	s.path = filename
-	b, err := ioutil.ReadFile(filename)
+	b, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
@@ -134,18 +134,15 @@ func (s *Spec) WriteYAML(writer io.Writer) error {
 }
 
 func (s *Spec) WriteToFile() error {
-	file, err := os.Create(s.path)
+	// Write the YAML to memory first, and then compare it with any
+	// existing file.
+	// We don't want to touch files if they don't change.
+	var b bytes.Buffer
+	err := s.WriteYAML(&b)
 	if err != nil {
 		return err
 	}
-	defer func() {
-		e := file.Close()
-		if e != nil {
-			err = e
-		}
-	}()
-
-	return s.WriteYAML(file)
+	return writeFileIfChanged(s.path, b.Bytes())
 }
 
 // BuildLockFile generates a lock file using the given solution.

@@ -2,6 +2,7 @@ BUILD_DIR := build
 
 GO_PACKAGE := github.com/toitlang/tpkg
 
+# When rebuilding gold files, the TOITC_PATH must be changed to be absolute.
 TOITC_PATH ?= toit.compile
 TOITLSP_PATH ?= toit.lsp
 TOITVM_PATH ?= toit.run

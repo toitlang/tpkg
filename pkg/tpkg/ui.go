@@ -59,6 +59,19 @@ func (ui fmtUI) ReportInfo(format string, a ...interface{}) {
 	fmt.Printf("Info: "+format+"\n", a...)
 }
 
+// nullUI implements a UI that does nothing.
+type nullUI struct{}
+
+func (ui nullUI) ReportError(format string, a ...interface{}) error {
+	return ErrAlreadyReported
+}
+
+func (ui nullUI) ReportWarning(format string, a ...interface{}) {
+}
+
+func (ui nullUI) ReportInfo(format string, a ...interface{}) {
+}
+
 var (
 	// ErrAlreadyReported can be used to signal that an error has
 	// been reported, and that no further action needs to be taken.

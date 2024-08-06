@@ -1,0 +1,9 @@
+// Add registry so we can find packages.
+===================
+pkg registry add --local test-reg <TEST>/registry_git_pkgs
+Exit Code: 0
+===================
+// Just 'install' doesn't add the missing dependencies.
+===================
+pkg install
+Exit Code: 0

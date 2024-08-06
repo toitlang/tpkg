@@ -17,7 +17,7 @@ package tpkg
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -76,7 +76,7 @@ func (pe PackageEntry) Validate(ui UI) error {
 // ReadLockFile reads the lock-file at the given path.
 func ReadLockFile(path string) (*LockFile, error) {
 	// TODO(florian): should we validate the file here?
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -91,11 +91,16 @@ func ReadLockFile(path string) (*LockFile, error) {
 }
 
 func (lf *LockFile) WriteToFile() error {
+	// Write the YAML to memory first, and then compare it with any
+	// existing file.
+	// We don't want to touch files if they don't change.
+
 	b, err := yaml.Marshal(lf)
 	if err != nil {
 		return err
 	}
-	return ioutil.WriteFile(lf.path, b, 0644)
+
+	return writeFileIfChanged(lf.path, b)
 }
 
 // PrintLockFile prints the contents of the lock file for the current project.

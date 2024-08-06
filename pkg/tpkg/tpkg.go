@@ -43,7 +43,7 @@ func lockPathForDir(dir string) string {
 
 // InitDirectory initializes the project root as the root for a package or application.
 // If no root is given, initializes the current directory instead.
-func InitDirectory(projectRoot string, ui UI) error {
+func InitDirectory(projectRoot string, name string, description string, ui UI) error {
 	dir := projectRoot
 	if dir == "" {
 		cwd, err := os.Getwd()
@@ -68,7 +68,13 @@ func InitDirectory(projectRoot string, ui UI) error {
 		ui.ReportInfo("Directory '%s' already initialized", dir)
 		return nil
 	}
-	err = ioutil.WriteFile(pkgPath, []byte("# Toit Package File.\n"), 0644)
+
+	spec := Spec{
+		path:        pkgPath,
+		Name:        name,
+		Description: description,
+	}
+	err = spec.WriteToFile()
 	if err != nil {
 		return err
 	}

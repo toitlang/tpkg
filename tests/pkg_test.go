@@ -290,7 +290,7 @@ func copyRec(t *tedi.T, testDir string, sourceDir string, targetDir string) {
 			}
 			return unzip(p, filepath.Dir(target))
 		}
-		data, err := ioutil.ReadFile(p)
+		data, err := os.ReadFile(p)
 		if err != nil {
 			return err
 		}
@@ -300,7 +300,7 @@ func copyRec(t *tedi.T, testDir string, sourceDir string, targetDir string) {
 		data = bytes.ReplaceAll(data, []byte(testDirGitPattern), []byte(testDirGitURL))
 		escapedTestDirGitURL := string(compiler.ToURIPath(testDirGitURL))
 		data = bytes.ReplaceAll(data, []byte(testDirGitEscapePattern), []byte(escapedTestDirGitURL))
-		return ioutil.WriteFile(target, data, info.Mode().Perm())
+		return os.WriteFile(target, data, info.Mode().Perm())
 	})
 	require.NoError(t, err)
 }
@@ -515,7 +515,7 @@ func (pt PkgTest) updateGold(name string, newGold string) {
 	}
 	require.NoError(pt.t, err)
 	goldPath := filepath.Join(goldDir, name+".gold")
-	oldBytes, err := ioutil.ReadFile(goldPath)
+	oldBytes, err := os.ReadFile(goldPath)
 	if err == nil {
 		oldGold := string(oldBytes)
 		if string(oldBytes) != newGold {
@@ -524,7 +524,7 @@ func (pt PkgTest) updateGold(name string, newGold string) {
 	} else if os.IsNotExist(err) {
 		fmt.Printf("Creating new gold %s with content:\n%s", goldPath, newGold)
 	}
-	err = ioutil.WriteFile(goldPath, []byte(newGold), 0644)
+	err = os.WriteFile(goldPath, []byte(newGold), 0644)
 	require.NoError(pt.t, err)
 }
 
@@ -534,7 +534,7 @@ func (pt PkgTest) checkGold(name string, actual string) {
 		return
 	}
 	goldPath := filepath.Join(pt.dir, "gold", name+".gold")
-	contentBytes, err := ioutil.ReadFile(goldPath)
+	contentBytes, err := os.ReadFile(goldPath)
 	require.NoError(pt.t, err)
 	gold := string(contentBytes)
 	// On windows the gold files come with '\r\n'...
@@ -648,12 +648,12 @@ func test_toitPkg(t *tedi.T) {
 			Branch: plumbing.NewTagReferenceName("1.0.0"),
 		})
 		require.NoError(t, err)
-		data, err := ioutil.ReadFile(filepath.Join(gitDir, "a"))
+		data, err := os.ReadFile(filepath.Join(gitDir, "a"))
 		require.NoError(t, err)
 		dataStr := strings.ReplaceAll(string(data), "\r\n", "\n")
 		// Notice that we implicitly check the correct `<[*TEST_DIR*>]` replacement.
 		assert.Equal(t, dirInFiles+"/a 1.0.0\n", dataStr)
-		data, err = ioutil.ReadFile(filepath.Join(gitDir, "b"))
+		data, err = os.ReadFile(filepath.Join(gitDir, "b"))
 		require.NoError(t, err)
 		dataStr = strings.ReplaceAll(string(data), "\r\n", "\n")
 		assert.Equal(t, dirInFiles+"/b 1.0.0\n", dataStr)
@@ -666,13 +666,13 @@ func test_toitPkg(t *tedi.T) {
 			Branch: plumbing.NewTagReferenceName("2.0.0"),
 		})
 		require.NoError(t, err)
-		data, err = ioutil.ReadFile(filepath.Join(gitDir, "a"))
+		data, err = os.ReadFile(filepath.Join(gitDir, "a"))
 		require.NoError(t, err)
 		dataStr = strings.ReplaceAll(string(data), "\r\n", "\n")
 		assert.Equal(t, dirInFiles+"/a 2.0.0\n", dataStr)
 		_, err = os.Stat(filepath.Join(gitDir, "b"))
 		assert.True(t, os.IsNotExist(err))
-		data, err = ioutil.ReadFile(filepath.Join(gitDir, "c"))
+		data, err = os.ReadFile(filepath.Join(gitDir, "c"))
 		require.NoError(t, err)
 		dataStr = strings.ReplaceAll(string(data), "\r\n", "\n")
 		assert.Equal(t, dirInFiles+"/c 2.0.0\n", dataStr)
@@ -1130,10 +1130,10 @@ func test_toitPkg(t *tedi.T) {
 				{"pkg", "list"},
 			})
 
-			data, err := ioutil.ReadFile(filepath.Join(pt.dir, yamlFile))
+			data, err := os.ReadFile(filepath.Join(pt.dir, yamlFile))
 			require.NoError(t, err)
 			pkgTestSpecPath := filepath.Join(regPath, yamlFile)
-			err = ioutil.WriteFile(pkgTestSpecPath, data, 0644)
+			err = os.WriteFile(pkgTestSpecPath, data, 0644)
 			require.NoError(t, err)
 
 			repository, err := git.PlainOpen(regPath)
@@ -1179,7 +1179,7 @@ func test_toitPkg(t *tedi.T) {
 			// Touch a file in the cache path, so we can see that the clear-cache
 			// actually removes it.
 			cacheFile := filepath.Join(regCachePath, "foo")
-			err := ioutil.WriteFile(cacheFile, []byte("foo"), 0644)
+			err := os.WriteFile(cacheFile, []byte("foo"), 0644)
 			require.NoError(t, err)
 
 			if i == 0 {
@@ -1359,7 +1359,7 @@ func test_toitPkg(t *tedi.T) {
 		})
 
 		yamlPath := filepath.Join(pt.dir, "package.yaml")
-		err := ioutil.WriteFile(yamlPath, []byte{}, 0644)
+		err := os.WriteFile(yamlPath, []byte{}, 0644)
 		assert.NoError(t, err)
 
 		pt.GoldToit("test2", [][]string{
@@ -1378,7 +1378,7 @@ func test_toitPkg(t *tedi.T) {
 			{"pkg", "registry", "add", "toit", "github.com/toitware/registry"},
 		})
 		configPath := filepath.Join(pt.dir, "config.yaml")
-		data, err := ioutil.ReadFile(configPath)
+		data, err := os.ReadFile(configPath)
 		assert.NoError(t, err)
 		assert.Contains(t, string(data), "toitware/registry")
 	})
@@ -1473,7 +1473,7 @@ func test_toitPkg(t *tedi.T) {
 		})
 		descPath := filepath.Join(pt.dir, "out", "packages", "github.com", "toitware", "toit-morse", "1.0.6", "desc.yaml")
 		assert.FileExists(t, descPath)
-		_, err := ioutil.ReadFile(descPath)
+		_, err := os.ReadFile(descPath)
 		assert.NoError(t, err)
 	})
 
@@ -1647,13 +1647,13 @@ func test_toitPkg(t *tedi.T) {
 		// Modifying the version constraint in the package.spec is copied to the
 		// lock file.
 		packageSpecPath := filepath.Join(pt.dir, "package.yaml")
-		data, err := ioutil.ReadFile(packageSpecPath)
+		data, err := os.ReadFile(packageSpecPath)
 		assert.NoError(t, err)
 		str := string(data) + `
 environment:
   sdk: ^1.20.0
 `
-		err = ioutil.WriteFile(packageSpecPath, []byte(str), 0644)
+		err = os.WriteFile(packageSpecPath, []byte(str), 0644)
 		assert.NoError(t, err)
 		pt.GoldToit("test3", [][]string{
 			{"// sdkVersion = "},
@@ -1708,5 +1708,25 @@ environment:
 			}()
 		}
 		wg.Wait()
+	})
+
+	t.Run("InstallNoMTimeChange", func(t *tedi.T, pt PkgTest) {
+		regPath := filepath.Join(pt.dir, "registry_git_pkgs")
+		lockPath := filepath.Join(pt.dir, "package.lock")
+		info, err := os.Stat(lockPath)
+		assert.NoError(t, err)
+		mtimeBefore := info.ModTime()
+
+		pt.GoldToit("test", [][]string{
+			{"// Add registry so we can find packages."},
+			{"pkg", "registry", "add", "--local", "test-reg", regPath},
+			{"// Just 'install' doesn't add the missing dependencies."},
+			{"pkg", "install"},
+		})
+
+		info, err = os.Stat(lockPath)
+		assert.NoError(t, err)
+		mtimeAfter := info.ModTime()
+		assert.Equal(t, mtimeBefore, mtimeAfter)
 	})
 }
