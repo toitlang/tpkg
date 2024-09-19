@@ -1,3 +1,11 @@
+pkg describe https://github.com/toitware/toit-morse 1.0.0
+Exit Code: 1
+Error: Invalid version: '1.0.0', not starting with 'v'
+===================
 pkg describe https://github.com/toitware/toit-morse bad-version
 Exit Code: 1
-Error: Invalid version: 'bad-version'
+Error: Invalid version: 'bad-version', not starting with 'v'
+===================
+pkg describe https://github.com/toitware/toit-morse vbad-version
+Exit Code: 1
+Error: Invalid version: 'vbad-version'

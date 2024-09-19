@@ -1,3 +1,3 @@
-pkg describe https://toit.io/testing/not_exist 1.0.0
+pkg describe https://toit.io/testing/not_exist v1.0.0
 Exit Code: 1
 Error: Error while cloning 'toit.io/testing/not_exist' with tag 'v1.0.0': repository not found
